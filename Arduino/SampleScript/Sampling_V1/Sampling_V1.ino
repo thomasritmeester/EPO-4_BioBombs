@@ -6,9 +6,9 @@ const int GSR=A1;
 int ecgValue=0;
 int emgValue=0;
 int gsrValue=0;
-int ecg_sum=0;
-int emg_sum=0;
-int gsr_sum=0;
+long ecg_sum=0;
+long emg_sum=0;
+long gsr_sum=0;
 int gsr_average=0;
 int ecg_average=0;
 int emg_average=0;
@@ -19,6 +19,8 @@ int ecg_cal_peak_sum;
 float ratio;
 
 float calibrate(){
+  emg_sum=0;
+  ecg_sum=0;
   for(int k=0; k<4;k++)
     {
       emg_cal_peak=0;
@@ -34,16 +36,20 @@ float calibrate(){
           if (ecg_cal_peak < ecgValue){
             ecg_cal_peak = ecgValue;
           }
+          emg_sum += emgValue;
+          ecg_sum += ecgValue;
         }
         
       emg_cal_peak_sum += emg_cal_peak;
       ecg_cal_peak_sum += ecg_cal_peak;
     }
-    ratio = (float)emg_cal_peak_sum/(float)ecg_cal_peak_sum;
+
+    ratio = (float)(emg_cal_peak_sum/4-(emg_sum/4000))/(float)(ecg_cal_peak_sum/4-(ecg_sum/4000));
     Serial.print("Ratio:");
     Serial.println(ratio);
   return (ratio);
 }
+
 
 
 void setup(){
