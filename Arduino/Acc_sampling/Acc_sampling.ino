@@ -25,9 +25,5 @@ void loop(){
   Serial.print("AccX = "); Serial.print(AccX);
   Serial.print(" || AccY = "); Serial.print(AccY);
   Serial.print(" || AccZ = "); Serial.print(AccZ);
-  Serial.print(" || Temp = "); Serial.println(Temp/340.00+36.53);
-  //Serial.print(" || GyroX = "); Serial.print(GyroX);
-  //Serial.print(" || GyroY = "); Serial.print(GyroY);
-  //Serial.print(" || GyroZ = "); Serial.println(GyroZ);
   delay(100);
 }

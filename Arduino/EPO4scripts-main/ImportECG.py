@@ -10,8 +10,8 @@ def import_all(COMport = '/dev/ttyACM0'):
         open_link = link.open()
         print(f"Link is open: {open_link}")
 
-        header = ['TimeStamp', 'ECG Data', 'GSR Data', 'EMG Data']
-        data = [0, 0, 0, 0]
+        header = ['TimeStamp', 'GSR Data', 'ECG Data',  'EMG Data', 'Acc X', 'Acc Y', 'Acc z']
+        data = [0, 0, 0, 0, 0, 0, 0]
 
         output_file = open('ECGdata.csv', 'w')
         writer = csv.writer(output_file)
@@ -19,13 +19,6 @@ def import_all(COMport = '/dev/ttyACM0'):
 
         time.sleep(3)
         print(f"link status: {link.status}")       
-        
-        print('Send any character to start calibration.')
-        input()
-        print('Calibration started, data collection will start shortly.')
-        print('Stop data collection by keyboard interrupt (ctrl+c)')
-        send_size = link.tx_obj('k')
-        link.send(send_size)
         
         while True:
             if link.available():
@@ -44,6 +37,18 @@ def import_all(COMport = '/dev/ttyACM0'):
                 
                 #import EMG data from serial connection
                 data[3] = link.rx_obj(obj_type='H', start_pos=recSize)
+                recSize += txfer.STRUCT_FORMAT_LENGTHS['H']
+                
+                #import ACC x data from serial connection
+                data[4] = link.rx_obj(obj_type='H', start_pos=recSize)
+                recSize += txfer.STRUCT_FORMAT_LENGTHS['H']
+                
+                #import ACC y data from serial connection
+                data[5] = link.rx_obj(obj_type='H', start_pos=recSize)
+                recSize += txfer.STRUCT_FORMAT_LENGTHS['H']
+                
+                #import ACC z data from serial connection
+                data[6] = link.rx_obj(obj_type='H', start_pos=recSize)
                 recSize += txfer.STRUCT_FORMAT_LENGTHS['H']
 
                 writer.writerow(data)
