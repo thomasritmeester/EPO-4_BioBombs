@@ -10,8 +10,8 @@ def import_all(COMport = '/dev/ttyACM0'):
         open_link = link.open()
         print(f"Link is open: {open_link}")
 
-        header = ['TimeStamp', 'GSR Data', 'ECG Data',  'EMG Data', 'Acc X', 'Acc Y', 'Acc z']
-        data = [0, 0, 0, 0, 0, 0, 0]
+        header = ['TimeStamp', 'GSR Data', 'ECG Data',  'EMG Data', 'Acc1 X', 'Acc1 Y', 'Acc1 z', 'Acc2 X', 'Acc2 Y', 'Acc2 z']
+        data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         output_file = open('ECGdata.csv', 'w')
         writer = csv.writer(output_file)
@@ -39,17 +39,29 @@ def import_all(COMport = '/dev/ttyACM0'):
                 data[3] = link.rx_obj(obj_type='H', start_pos=recSize)
                 recSize += txfer.STRUCT_FORMAT_LENGTHS['H']
                 
-                #import ACC x data from serial connection
-                data[4] = link.rx_obj(obj_type='H', start_pos=recSize)
-                recSize += txfer.STRUCT_FORMAT_LENGTHS['H']
+                #import ACC1 x data from serial connection
+                data[4] = link.rx_obj(obj_type='h', start_pos=recSize)
+                recSize += txfer.STRUCT_FORMAT_LENGTHS['h']
                 
-                #import ACC y data from serial connection
-                data[5] = link.rx_obj(obj_type='H', start_pos=recSize)
-                recSize += txfer.STRUCT_FORMAT_LENGTHS['H']
+                #import ACC1 y data from serial connection
+                data[5] = link.rx_obj(obj_type='h', start_pos=recSize)
+                recSize += txfer.STRUCT_FORMAT_LENGTHS['h']
                 
-                #import ACC z data from serial connection
-                data[6] = link.rx_obj(obj_type='H', start_pos=recSize)
-                recSize += txfer.STRUCT_FORMAT_LENGTHS['H']
+                #import ACC1 z data from serial connection
+                data[6] = link.rx_obj(obj_type='h', start_pos=recSize)
+                recSize += txfer.STRUCT_FORMAT_LENGTHS['h']
+                
+                #import ACC2 x data from serial connection
+                data[7] = link.rx_obj(obj_type='h', start_pos=recSize)
+                recSize += txfer.STRUCT_FORMAT_LENGTHS['h']
+                
+                #import ACC2 y data from serial connection
+                data[8] = link.rx_obj(obj_type='h', start_pos=recSize)
+                recSize += txfer.STRUCT_FORMAT_LENGTHS['h']
+                
+                #import ACC2 z data from serial connection
+                data[9] = link.rx_obj(obj_type='h', start_pos=recSize)
+                recSize += txfer.STRUCT_FORMAT_LENGTHS['h']
 
                 writer.writerow(data)
 
