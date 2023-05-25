@@ -13,105 +13,6 @@ import sys
 import scipy.ndimage
 
 
-# # =================loading data================================================
-# # 
-# """We need to define the dataset path and the subject ID"""
-# #
-# data_set_path = "/Users/kakis/OneDrive/Documenten/unie/Delft/BSc Electrical Engineering/Year 2/EPO/EPO-4/WESAD/WESAD/"
-# subject = 'S7' #--- 'S17'
-# #
-# """The class below allows you to access all the recordings and labels in the dataset."""
-# #
-# #
-# class read_data_of_one_subject:
-#     """Read data from WESAD dataset"""
-#     def __init__(self, path, subject):
-#         self.keys = ['label', 'subject', 'signal']
-#         self.signal_keys = ['wrist', 'chest']
-#         self.chest_sensor_keys = ['ACC', 'ECG', 'EDA', 'EMG', 'Resp', 'Temp']
-#         self.wrist_sensor_keys = ['ACC', 'BVP', 'EDA', 'TEMP']
-#         #os.chdir(path)
-#         #os.chdir(subject)
-#         with open(path + subject +'/'+subject + '.pkl', 'rb') as file:
-#             data = pickle.load(file, encoding='latin1')
-#         self.data = data
-
-
-#     def get_labels(self):
-#         return self.data[self.keys[0]]
-    
-
-#     def get_wrist_data(self):
-#         """"""
-#         #label = self.data[self.keys[0]]
-#         assert subject == self.data[self.keys[1]]
-#         signal = self.data[self.keys[2]]
-#         wrist_data = signal[self.signal_keys[0]]
-#         #wrist_ACC = wrist_data[self.wrist_sensor_keys[0]]
-#         #wrist_ECG = wrist_data[self.wrist_sensor_keys[1]]
-#         return wrist_data
-
-#     def get_chest_data(self):
-#         """"""
-#         signal = self.data[self.keys[2]]
-#         chest_data = signal[self.signal_keys[1]]
-#         return chest_data
-# #
-# # Object instantiation
-# obj_data = {}
-# #
-# # Accessing class attributes and method through objects
-# obj_data[subject] = read_data_of_one_subject(data_set_path, subject)
-# #
-# """The code below allows you to read and print the length of all biosignals from the chest recording device recorded all at 700 Hz."""
-# #
-# chest_data_dict = obj_data[subject].get_chest_data()# your code here
-# chest_dict_length = {key: len(value) for key, value in chest_data_dict.items()}
-# print(chest_dict_length)
-# #
-# """You can also access the labels of each class. The following labels are provided: 0 = not defined / transient, 1 = baseline, 2 = stress, 3 = amusement, 4 = meditation, 5/6/7 = should be ignored in this dataset."""
-# #
-# #
-# # Get labels
-# labels = obj_data[subject].get_labels()
-# baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
-# stress = np.asarray([idx for idx,val in enumerate(labels) if val == 2])
-# amusement = np.asarray([idx for idx,val in enumerate(labels) if val == 3])
-# meditation = np.asarray([idx for idx,val in enumerate(labels) if val == 4])# plt.plot(labels)
-# # 
-# #
-# """Let's load some part of the EDA signal during baseline recording"""
-# fs=700
-# emg_base=chest_data_dict['EMG'][baseline,0]
-# emg_stress=chest_data_dict['EMG'][stress,0]
-# emg_amusement=chest_data_dict['EMG'][amusement,0]
-# emg_meditation=chest_data_dict['EMG'][meditation,0]
-# #
-# # =============================================================================
-# fs= 200
-# #read cvs file
-# data = pd.read_csv("completetest_stress.csv")
-# data
-# print(data.shape)
-# print(data)
-
-# # seperate file into EMG and ECG
-# timestamp = data['TimeStamp']
-# EMG = data['EMG Data']
-# ECG = data['ECG Data']
-# print(EMG)
-# emg_base = EMG.to_numpy()
-# print("emg_base:")
-# print(emg_base.shape, emg_base)
-#plot EMG
-# plt.figure(figsize=(12,4))
-# plt.plot(timestamp,EMG, label="raw EMG")
-# plt.xlabel('$Time (s)$') 
-# plt.ylabel('$EMG$') 
-# plt.legend()
-# plt.show()
-
-
 EMG = {}
 class EMGprep:
     def __init__ (self,Fs,emg_class=[],title=""): 
@@ -310,7 +211,7 @@ class EMGprep:
         plt.legend()
         plt.show()        
         
-        return emg_ln
+        return emg_hn
     
 # EMG = EMGprep(fs,emg_base,"stress")
    
@@ -318,41 +219,3 @@ class EMGprep:
 # EMG.filtering_data()
 # EMG.plotdata(emg_stress,"stress")
 # EMG.filtering_data(emg_stress,"stress")
-# EMG.plotdata(emg_amusement,"amusement")
-# EMG.filtering_data(emg_amusement,"amusement")
-# EMG.plotdata(emg_meditation,"meditation")
-# EMG.filtering_data(emg_meditation,"meditation")
-
-
-        # # bandpass filter
-        # lowc = 20/nyq
-        # highc = 450/nyq
-        # dam=np.arange(1,6,1)
-        # print(nyq, lowc,highc)
-        # for orders in dam:
-        #     b, a = butter(orders, [lowc,highc], btype='band')
-        #     # print(a)
-        #     # print(b)
-        #     w,h=sig.freqs(b,a)
-        #     plt.plot(w,20*np.log10(abs(h)))
-        #     plt.xscale("log")
-        #     plt.title("Butterworth filter frequency response, order = "+str(orders))
-        #     plt.xlabel("Frequency [radians/second]")
-        #     plt.ylabel("Amplitude [dB]")
-        #     plt.margins(0,0.1)
-        #     plt.grid(which="both", axis="both")
-        #     plt.axvline(highc, color="green")
-        #     plt.axvline(lowc, color="green")    
-        #     plt.show()
-
-        #     emg_hb = lfilter(b,a,emg_h)
-    
-        #     plt.figure(figsize=(12,4))
-        #     plt.plot(t,emg_h, label="emg_h")
-        #     plt.plot(t,emg_hb, label="emg_hb")
-        #     plt.title("EMG filtered (hb) "+title +" order = "+str(orders))
-        #     plt.xlabel('$Time (s)$') 
-        #     plt.ylabel('$EMG$') 
-        #     # plt.ylim(-1000,1000)
-        #     plt.legend()
-        #     plt.show()
