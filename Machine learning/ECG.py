@@ -130,7 +130,7 @@ class ECGfeatures:
         self.title=title
         
     def rpeaks(self,title=""):
-        _, rpeaks = nk.ecg_peaks(self.ecg, sampling_rate=self.Fs) 
+        rpeaks, info = nk.ecg_peaks(self.ecg, sampling_rate=self.Fs) 
         # if title=="":
         #     title=self.title
         # plt.plot((rpeaks['ECG_R_Peaks']/self.Fs),self.ecg[rpeaks['ECG_R_Peaks']], 'go')
@@ -141,12 +141,15 @@ class ECGfeatures:
         # plt.xlabel('$Time (s)$') 
         # plt.ylabel('$ECG$') 
         # plt.show()
-        return rpeaks
+        return rpeaks, info
         
-    def HRV(self,title="",signal=[]):
-        if signal==[]:
-            signal=self.ecg
-        _, HRV =nk.hrv(signal, sampling_rate=self.Fs)
+    def HRV(self, signal, title=""):
+        #if signal==[]:
+        #    signal=self.ecg
+        #    print("yes")
+        #else:
+        #    print("No")
+        HRV=nk.hrv(signal, sampling_rate=self.Fs)
         # if title=="":
         #     title=self.title
         # plt.plot((rpeaks['ECG_R_Peaks']/self.Fs),self.ecg[rpeaks['ECG_R_Peaks']], 'go')
