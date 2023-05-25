@@ -1,6 +1,7 @@
 #include "SerialTransfer.h"
 #include "I2Cdev.h"
 #include "MPU6050.h"
+#include <Adafruit_MLX90614.h>
 
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
 // is used in I2Cdev.h
@@ -10,9 +11,10 @@
 
 MPU6050 mpu1;
 MPU6050 mpu2(0x69);
+Adafruit_MLX90614 tempSensor = Adafruit_MLX90614();
 SerialTransfer myTransfer;
 
-int Fs = 100; //Hz
+int Fs = 200; //Hz
 unsigned long prevMillis;
 
 const int ECG = A0;
@@ -31,6 +33,8 @@ uint16_t emg_average = 0;
 int16_t ax1, ay1, az1, gx1, gy1, gz1;
 int16_t ax2, ay2, az2, gx2, gy2, gz2;
 
+uint16_t temperature;
+
 struct STRUCT {
   unsigned long timestamp;
   uint16_t  ECG_data;
@@ -42,6 +46,7 @@ struct STRUCT {
   int16_t ACC2_X_data;
   int16_t ACC2_Y_data;
   int16_t ACC2_Z_data;
+  uint16_t TEMP_DATA;
 } dataPacket;
 
 void setup()
@@ -55,6 +60,7 @@ void setup()
 
   Serial.begin(57600);
   myTransfer.begin(Serial);
+  tempSensor.begin();
 
   //initialize accelerometer
   mpu1.initialize();
@@ -90,23 +96,27 @@ void loop()
 void takeMeasurements() {
   //take 10 measurements and average them
   int ecg_sum = 0, gsr_sum = 0, emg_sum = 0;
-  for (int i = 0; i < 10; i++)
-  {
-    gsrValue = analogRead(GSR);
-    gsr_sum += gsrValue;
-    ecgValue = analogRead(ECG);
-    ecg_sum += ecgValue;
-    emgValue = analogRead(EMG);
-    emg_sum += emgValue;
-    delayMicroseconds(500);
-  }
-  gsr_average = gsr_sum / 10;
-  ecg_average = ecg_sum / 10;
-  emg_average = emg_sum / 10;
+//  for (int i = 0; i < 5; i++)
+//  {
+//    gsrValue = analogRead(GSR);
+//    gsr_sum += gsrValue;
+//    ecgValue = analogRead(ECG);
+//    ecg_sum += ecgValue;
+//    emgValue = analogRead(EMG);
+//    emg_sum += emgValue;
+//  }
+//  gsr_average = gsr_sum;
+//  ecg_average = ecg_sum;
+//  emg_average = emg_sum;
+
+  gsr_average = analogRead(GSR);
+  ecg_average = analogRead(ECG);
+  emg_average = analogRead(EMG);
 
   //measure accelerometer values
   mpu1.getMotion6(&ax1, &ay1, &az1, &gx1, &gy1, &gz1);
   mpu2.getMotion6(&ax2, &ay2, &az2, &gx2, &gy2, &gz2);
+  temperature = tempSensor.readObjectTempC()*100;
 }
 
 void sendData() {
@@ -122,6 +132,7 @@ void sendData() {
   dataPacket.ACC2_X_data = ax2;
   dataPacket.ACC2_Y_data = ay2;
   dataPacket.ACC2_Z_data = az2;
+  dataPacket.TEMP_DATA = temperature;
 
   sendSize = myTransfer.txObj(dataPacket, sendSize);
   // Send buffer
