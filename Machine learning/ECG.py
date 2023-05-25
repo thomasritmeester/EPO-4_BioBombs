@@ -143,6 +143,20 @@ class ECGfeatures:
         # plt.show()
         return rpeaks
         
+    def HRV(self,title=""):
+        _, HRV =nk.hrv(self.ecg, sampling_rate=self.Fs)
+        # if title=="":
+        #     title=self.title
+        # plt.plot((rpeaks['ECG_R_Peaks']/self.Fs),self.ecg[rpeaks['ECG_R_Peaks']], 'go')
+        # t=np.arange(0,self.ecg.size*(1/self.Fs),(1/self.Fs))
+        # plt.plot(t,self.ecg)
+        # plt.title("R-peaks "+ title)
+        # plt.xlim(0,max(t))
+        # plt.xlabel('$Time (s)$') 
+        # plt.ylabel('$ECG$') 
+        # plt.show()
+        return HRV
+        
 # ECGfeat = ECGfeatures(ecg_filt,fs,"test")
 # ECGfeat.rpeaks("baseline")
 # ECGfeat.rpeaks()
