@@ -143,8 +143,10 @@ class ECGfeatures:
         # plt.show()
         return rpeaks
         
-    def HRV(self,title=""):
-        _, HRV =nk.hrv(self.ecg, sampling_rate=self.Fs)
+    def HRV(self,title="",signal=[]):
+        if signal==[]:
+            signal=self.ecg
+        _, HRV =nk.hrv(signal, sampling_rate=self.Fs)
         # if title=="":
         #     title=self.title
         # plt.plot((rpeaks['ECG_R_Peaks']/self.Fs),self.ecg[rpeaks['ECG_R_Peaks']], 'go')
