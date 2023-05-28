@@ -38,11 +38,11 @@ def ECG_data(ecg):
     wdw=int(0.5*60*fs)
     size_adpt=int(len(ecg)/(len(ecg)/(int(wdw))))
 
-    print(size_adpt, "size of the samples")
+    #print(size_adpt, "size of the samples")
     t_tot = (len(ecg)//(int(wdw)))
     ecg_tot = np.zeros([size_adpt, t_tot])
     #ecg_base_tot = np.zeros([size_adpt, t_tot])
-    print(t_tot, 'ttot1')
+    #print(t_tot, 'ttot1')
 
     for i in range(t_tot):
         ecg1 = ecg_tot[i*int(wdw):(i+1)*int(wdw)]
@@ -61,7 +61,7 @@ def ECG_data(ecg):
     #Data perperation, i.e. filtering etc
     #ECG_base = []
     ECG = []
-    print(t_tot, 'ttot2')
+    #print(t_tot, 'ttot2')
 
     for i in range(t_tot):
        # ECG_base = ECGprep(fs, ecg_base_tot[:,i], "baseline")
@@ -89,8 +89,8 @@ def ECG_data(ecg):
 
         hrv=hrv.dropna(1)
         #hrv_b=hrv_b.dropna()
-        print(hrv.shape, 'HRV 1')
-        display(hrv.to_string())
+        # print(hrv.shape, 'HRV 1')
+        # display(hrv.to_string())
         
     return hrv
     # eda_features = np.vstack((ecg_features,ecg_feat_s))
