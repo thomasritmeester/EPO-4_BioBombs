@@ -22,13 +22,8 @@ from IPython.display import display
 #Creating a function:
 def ECG_data(ecg):
     from ECG import ECGprep
-    
-    from ECG import ECGfeatures
 
-    import sys
-    sys.path.insert(1, 'D:\Documents\GitHub\EPO-4_BioBombs\Machine learning')
-
-    #ecg_features = np.asarray([0, 0, 0, 0], dtype="float")
+    ecg_features = np.asarray(np.zeros(18), dtype = "float")
 
 
     fs = 700 #sampling freq.
@@ -45,7 +40,7 @@ def ECG_data(ecg):
     #print(t_tot, 'ttot1')
 
     for i in range(t_tot):
-        ecg1 = ecg_tot[i*int(wdw):(i+1)*int(wdw)]
+        ecg1 = ecg[i*int(wdw):(i+1)*int(wdw)]
         #ecg2 = base[i*int(wdw):(i+1)*int(wdw)]
         t1 = np.arange(0, ecg1.size*(1/fs), (1/fs))
         t1 = t1[:ecg1.size]
@@ -88,11 +83,19 @@ def ECG_data(ecg):
         hrv=nk.hrv_time(peaks, sampling_rate=fs, show=False)
 
         hrv=hrv.dropna(1)
+        hrv_numpy = hrv.to_numpy()
+        print("hrv:")
+        print(hrv)
+        print("numpy:")
+        print(hrv_numpy)
+        print(hrv_numpy.shape)
+
+        ecg_features = np.vstack((ecg_features, hrv.to_numpy()[0,:]))
         #hrv_b=hrv_b.dropna()
         # print(hrv.shape, 'HRV 1')
         # display(hrv.to_string())
         
-    return hrv
+    return ecg_features[1:,:]
     # eda_features = np.vstack((ecg_features,ecg_feat_s))
     # eda_features = np.vstack((ecg_features,ecg_feat_b))
     #print(hrv_b, 'HRV 2')
