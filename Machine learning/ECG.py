@@ -5,6 +5,7 @@ from scipy.signal import butter, iirnotch, lfilter
 import matplotlib.pyplot as plt
 import sys
 from scipy.signal import freqz
+from neurokit2.signal import signal_fixpeaks, signal_formatpeaks
 sys.path.append("/usr/local/lib/python3.7/site-packages")
 
 class ECGprep:
@@ -129,30 +130,42 @@ class ECGfeatures:
         self.Fs = Fs
         self.title=title
         
-    def rpeaks(self,title=""):
+    def rpeaks(self, correct_artifacts=False, title=""):
         rpeaks, info = nk.ecg_peaks(self.ecg, sampling_rate=self.Fs) 
-        # if title=="":
-        #     title=self.title
-        # plt.plot((rpeaks['ECG_R_Peaks']/self.Fs),self.ecg[rpeaks['ECG_R_Peaks']], 'go')
-        # t=np.arange(0,self.ecg.size*(1/self.Fs),(1/self.Fs))
-        # plt.plot(t,self.ecg)
-        # plt.title("R-peaks "+ title)
-        # plt.xlim(0,max(t))
-        # plt.xlabel('$Time (s)$') 
-        # plt.ylabel('$ECG$') 
-        # plt.show()
+        if title=="":
+            title=self.title
+        plt.plot((rpeaks['ECG_R_Peaks']/self.Fs),self.ecg[rpeaks['ECG_R_Peaks']], 'go')
+        t=np.arange(0,self.ecg.size*(1/self.Fs),(1/self.Fs))
+        plt.plot(t,self.ecg)
+        plt.title("R-peaks "+ title)
+        plt.xlim(0,max(t))
+        plt.xlabel('$Time (s)$s') 
+        plt.ylabel('$ECG$') 
+        plt.show()
+
+        if correct_artifacts:
+            _, rpeaks = signal_fixpeaks(
+                rpeaks, sampling_rate=self.Fs, iterative=True, method="Kubios"
+            )
+
+            rpeaks = {"ECG_R_Peaks": rpeaks}
+
+        instant_peaks = signal_formatpeaks(rpeaks, desired_length=len(self.ecg), peak_indices=rpeaks)
+        signals = instant_peaks
+        info = rpeaks
+        info["sampling_rate"] = self.Fs  # Add sampling rate in dict info
         return rpeaks, info
         
-    def HRV(self, signal, title=""):
+    def HRV(self, signal,title=""):
         #if signal==[]:
         #    signal=self.ecg
         #    print("yes")
         #else:
         #    print("No")
-        HRV=nk.hrv(signal, sampling_rate=self.Fs)
+        HRV=nk.hrv(self, signal, sampling_rate=self.Fs, show=True)
         # if title=="":
         #     title=self.title
-        # plt.plot((rpeaks['ECG_R_Peaks']/self.Fs),self.ecg[rpeaks['ECG_R_Peaks']], 'go')
+        #plt.plot((rpeaks['ECG_R_Peaks']/self.Fs),self.ecg[rpeaks['ECG_R_Peaks']], 'go')
         # t=np.arange(0,self.ecg.size*(1/self.Fs),(1/self.Fs))
         # plt.plot(t,self.ecg)
         # plt.title("R-peaks "+ title)
