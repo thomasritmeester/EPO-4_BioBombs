@@ -28,7 +28,7 @@ def ECG_data(ecg):
     import sys
     sys.path.insert(1, 'D:\Documents\GitHub\EPO-4_BioBombs\Machine learning')
 
-    ecg_features = np.asarray([0, 0, 0, 0], dtype="float")
+    #ecg_features = np.asarray([0, 0, 0, 0], dtype="float")
 
 
     fs = 700 #sampling freq.
