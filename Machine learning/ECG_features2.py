@@ -20,7 +20,7 @@ from IPython.display import display
 
 ##################################
 #Creating a function:
-def ECG_data(ecg):
+def ECG_time_data(ecg):
     from ECG import ECGprep
 
     ecg_features = np.asarray(np.zeros(18), dtype = "float")
@@ -84,11 +84,11 @@ def ECG_data(ecg):
 
         hrv=hrv.dropna(1)
         hrv_numpy = hrv.to_numpy()
-        print("hrv:")
-        print(hrv)
-        print("numpy:")
-        print(hrv_numpy)
-        print(hrv_numpy.shape)
+        #print("hrv:")
+        #print(hrv)
+        #print("numpy:")
+        #print(hrv_numpy)
+        #print(hrv_numpy.shape)
 
         ecg_features = np.vstack((ecg_features, hrv.to_numpy()[0,:]))
         #hrv_b=hrv_b.dropna()

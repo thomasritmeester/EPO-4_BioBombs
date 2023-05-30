@@ -20,10 +20,10 @@ from IPython.display import display
 
 ##################################
 #Creating a function:
-def ECG_data(ecg):
+def ECG_freq_data(ecg):
     from ECG import ECGprep
 
-    ecg_features = np.asarray(np.zeros(18), dtype = "float")
+    ecg_features = np.asarray(np.zeros(4), dtype = "float")
 
 
     fs = 700 #sampling freq.
@@ -58,12 +58,12 @@ def ECG_data(ecg):
     ECG = []
     #print(t_tot, 'ttot2')
 
-    for i in range(t_tot):
+    #for i in range(t_tot):
        # ECG_base = ECGprep(fs, ecg_base_tot[:,i], "baseline")
-        ECG = ECGprep(fs, ecg_tot[:,i], "stress")
+        # ECG = ECGprep(fs, ecg_tot[:,i], "stress")
 
-        #ecg_filt_b = ECG_base.filtering_data()
-        ecg_filt = ECG.filtering_data()
+        # #ecg_filt_b = ECG_base.filtering_data()
+        # ecg_filt = ECG.filtering_data()
 
     #print(ecg_filt_b.shape, 'filtering shape')
 
@@ -73,7 +73,7 @@ def ECG_data(ecg):
     ECG_feat = pd.DataFrame()
     for i in range (t_tot):              #t_tot
         #ECG_feat_base = nk.ecg_clean( ecg_filt_b, sampling_rate=fs)
-        ECG_feat= nk.ecg_clean( ecg_filt, sampling_rate=fs)
+        ECG_feat= nk.ecg_clean( ecg_tot[:,i], sampling_rate=fs)
 
         #peaks_b, info_b = nk.ecg_peaks(ECG_feat_base, sampling_rate=fs, correct_artifacts=True)
         peaks, info = nk.ecg_peaks(ECG_feat, sampling_rate=fs, correct_artifacts=True)
@@ -84,11 +84,11 @@ def ECG_data(ecg):
 
         hrv=hrv.dropna(1)
         hrv_numpy = hrv.to_numpy()
-        print("hrv:")
-        print(hrv)
-        print("numpy:")
-        print(hrv_numpy)
-        print(hrv_numpy.shape)
+        #print("hrv:")
+        # print(hrv)
+        # print("numpy:")
+        # print(hrv_numpy)
+        # print(hrv_numpy.shape)
 
         ecg_features = np.vstack((ecg_features, hrv.to_numpy()[0,:]))
         #hrv_b=hrv_b.dropna()

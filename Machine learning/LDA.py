@@ -8,19 +8,22 @@ from sklearn.model_selection import train_test_split
 from EDA_Features2 import *
 from TEMP import *
 from ECG_features2 import * 
+from ECG_features3 import * 
 import warnings
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 print("Start!")
 
-data_set_path = "C:/Users/semve/OneDrive/Documenten/WESAD/WESAD/"
+data_set_path = "D:/Downloads/WESAD/WESAD/"
 subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
 
-features_base = np.asarray(np.zeros(32), dtype = "float")
-features_stress = np.asarray(np.zeros(32), dtype = "float")
+features_base = np.asarray(np.zeros(36), dtype = "float")
+features_stress = np.asarray(np.zeros(36), dtype = "float")
 
 for i in range(len(subject)):
+    print("subject: ", subject[i])
+
     obj_data = {}
 
     obj_data[subject[i]] = read_data_of_one_subject(data_set_path, subject[i])
@@ -46,21 +49,24 @@ for i in range(len(subject)):
     temp_features_base = calc_temp_features(temp_data_base)
     temp_features_stress = calc_temp_features(temp_data_stress)
 
-    ecg_features_base = ECG_data(ecg_data_base)
-    ecg_features_stress = ECG_data(ecg_data_stress)
+    ecg_features_time_base = ECG_time_data(ecg_data_base)
+    ecg_features_time_stress = ECG_time_data(ecg_data_stress)
 
-    print(ecg_features_base)
-    print(ecg_features_base.shape)
+    ecg_features_freq_base = ECG_freq_data(ecg_data_base)
+    ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
 
-    print(ecg_features_stress)
-    print(ecg_features_stress.shape)
+    #print(ecg_features_freq_base)
+    #print(ecg_features_freq_base.shape)
+
+    #print(ecg_features_freq_stress)
+    #print(ecg_features_freq_stress.shape)
 
     np.reshape(eda_features_stress, (1,-1))
 
-    print(eda_features_stress.shape, temp_features_stress.shape,ecg_features_stress.shape)
+    #print(eda_features_stress.shape, temp_features_stress.shape,ecg_features_time_stress.shape, ecg_features_freq_stress.shape)
 
-    features_stress = np.vstack((features_stress, np.hstack((eda_features_stress, temp_features_stress, ecg_features_stress))  ))
-    features_base = np.vstack((features_base, np.hstack((eda_features_base, temp_features_base, ecg_features_base)) ))
+    features_stress = np.vstack((features_stress, np.hstack((eda_features_stress, temp_features_stress, ecg_features_time_stress, ecg_features_freq_stress))  ))
+    features_base = np.vstack((features_base, np.hstack((eda_features_base, temp_features_base, ecg_features_time_base, ecg_features_freq_base)) ))
 
 features_base = features_base[1:,:]
 features_stress = features_stress[1:,:]
@@ -105,7 +111,7 @@ from sklearn.linear_model import LogisticRegression
 
 
 # prepare the cross-validation procedure
-cv = KFold(n_splits=15, shuffle=False)
+cv = KFold(n_splits=5, shuffle=True)
 
 # evaluate model
 scores = cross_val_score(lda, features_in, stress_state, scoring='accuracy', cv=cv, n_jobs=-1)
