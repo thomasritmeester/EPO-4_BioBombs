@@ -10,6 +10,7 @@ from TEMP import *
 from ECG_features2 import * 
 from ECG_features3 import * 
 import warnings
+from EMG_Features import *
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -39,6 +40,9 @@ for i in range(len(subject)):
     eda_data_stress=chest_data_dict['EDA'][stress,0]
     eda_data_base=chest_data_dict['EDA'][baseline,0]
 
+    emg_data_stress=chest_data_dict['EMG'][stress,0]
+    emg_data_base=chest_data_dict['EMG'][baseline,0]
+    
     temp_data_stress=chest_data_dict['Temp'][stress,0]
     temp_data_base=chest_data_dict['Temp'][baseline,0]
 
@@ -47,6 +51,9 @@ for i in range(len(subject)):
 
     eda_features_base = calc_eda_features(eda_data_base)
     eda_features_stress = calc_eda_features(eda_data_stress)
+    
+    emg_features_base = calc_emg_features(emg_data_base)
+    emg_features_stress = calc_emg_features(emg_data_stress)
 
     temp_features_base = calc_temp_features(temp_data_base)
     temp_features_stress = calc_temp_features(temp_data_stress)
@@ -130,6 +137,7 @@ full_model.add(Dropout(0.25))
 full_model.add(Dense(hidden_layer_2_nodes, activation='relu'))
 full_model.add(Dropout(0.25))
 full_model.add(Dense(hidden_layer_3_nodes, activation='relu'))
+full_model.add(Dropout(0.25))
 
 full_model.add(Dense(output_layer, activation='relu'))
 
