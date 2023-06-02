@@ -21,7 +21,9 @@ subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', '
 features_base = np.asarray(np.zeros(36), dtype = "float")
 features_stress = np.asarray(np.zeros(36), dtype = "float")
 
-for i in range(len(subject)):
+#######################################################################
+#Reading out subjects and calling the feature extraction functions
+for i in range(len(subject)):     
     print("subject: ", subject[i])
 
     obj_data = {}
@@ -87,28 +89,72 @@ stress_state = np.append( np.zeros(features_base.shape[0]) , np.ones(features_st
 #print(stress_state.shape)
 #stress_state = np.ravel(stress_state)
 
+
+########################################################################
+#LDA
 X_train, X_test, y_train, y_test = train_test_split(features_in, stress_state, test_size=0.25, random_state=42)
 
 lda=LDA(n_components=1)
 train_lda=lda.fit(X_train, y_train)
 test_lda=lda.predict(X_test)
 
-#print(test_lda.shape)
-#print(y_test.shape)
+# print(test_lda.shape)
+# print(y_test.shape)
 
 score= lda.score(X_test,y_test)
-print(score)
+print('Score:', score)
 
+
+
+
+######################################################################
+#Neural Network
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from keras.callbacks import ModelCheckpoint
+import keras as keras
+
+# # Create simple Neural Network model
+input_nodes = X_train.shape[1]
+hidden_layer_1_nodes = 1
+hidden_layer_2_nodes = 128
+hidden_layer_3_nodes = 256
+output_layer = 1
+
+# initializing a sequential model
+full_model = Sequential()
+
+# adding layers
+full_model.add(Dense(hidden_layer_1_nodes, activation='relu'))
+full_model.add(Dropout(0.25))
+full_model.add(Dense(hidden_layer_2_nodes, activation='relu'))
+full_model.add(Dropout(0.25))
+full_model.add(Dense(hidden_layer_3_nodes, activation='relu'))
+
+full_model.add(Dense(output_layer, activation='relu'))
+
+# Compiling the DNN
+full_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+full_model.summary()
+
+checkpoint_name = 'Weights-{epoch:03d}--{val_accuracy:.5f}.hdf5' 
+checkpoint = ModelCheckpoint(checkpoint_name, monitor='val_accuracy', verbose = 0, save_best_only = True, mode ='auto')
+callbacks_list = [checkpoint]
+
+history = full_model.fit(X_train,y_train,validation_data=(X_test,y_test), epochs=500, batch_size=32, verbose=1)	
+
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+print("best accuracy:",np.max(history.history['accuracy']))
+print("best val-accuracy:", np.max(history.history['val_accuracy']))
+
+#######################################################################
 ## K Cross fold validation
 
 from numpy import mean
 from numpy import std
-from sklearn.datasets import make_classification
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
-from sklearn.linear_model import LogisticRegression
-
-
 
 # prepare the cross-validation procedure
 cv = KFold(n_splits=5, shuffle=True)
