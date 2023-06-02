@@ -116,20 +116,21 @@ print("feat.shape:", features_in.shape)
 print('\n',"stress.shape:", stress_state.shape)
 print("Feat.shape:", Features_in.shape)
 print('\n',"Stress.shape:", Stress_state.shape)
+print("feat.type:", print(type(features_in)), "Feat.type", print(type(Features_in)))
 
-########################################################################
-#LDA
-X_train, X_test, y_train, y_test = train_test_split(Features_in, Stress_state, test_size=0.25, random_state=42)
+# ########################################################################
+# #LDA
+# X_train, X_test, y_train, y_test = train_test_split(Features_in, Stress_state, test_size=0.25, random_state=42)
 
-lda=LDA(n_components=1)
-train_lda=lda.fit(X_train, y_train)
-test_lda=lda.predict(X_test)
+# lda=LDA(n_components=1)
+# train_lda=lda.fit(X_train, y_train)
+# test_lda=lda.predict(X_test)
 
-# print(test_lda.shape)
-# print(y_test.shape)
+# # print(test_lda.shape)
+# # print(y_test.shape)
 
-score= lda.score(X_test,y_test)
-print('Score:', score)
+# score= lda.score(X_test,y_test)
+# print('Score:', score)
 
 
 
@@ -179,16 +180,16 @@ print('Score:', score)
 #######################################################################
 ## K Cross fold validation
 
-from numpy import mean
-from numpy import std
-from sklearn.model_selection import KFold
-from sklearn.model_selection import cross_val_score
+# from numpy import mean
+# from numpy import std
+# from sklearn.model_selection import KFold
+# from sklearn.model_selection import cross_val_score
 
-# prepare the cross-validation procedure
-cv = KFold(n_splits=5, shuffle=True)
+# # prepare the cross-validation procedure
+# cv = KFold(n_splits=5, shuffle=True)
 
-# evaluate model
-scores = cross_val_score(lda, features_in, stress_state, scoring='accuracy', cv=cv, n_jobs=-1)
-# report performance
-print('Accuracy: %.3f (%.3f)' % (mean(scores), std(scores)))
-print(scores)
+# # evaluate model
+# scores = cross_val_score(lda, features_in, stress_state, scoring='accuracy', cv=cv, n_jobs=-1)
+# # report performance
+# print('Accuracy: %.3f (%.3f)' % (mean(scores), std(scores)))
+# print(scores)
