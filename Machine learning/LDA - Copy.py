@@ -96,10 +96,30 @@ stress_state = np.append( np.zeros(features_base.shape[0]) , np.ones(features_st
 #print(stress_state.shape)
 #stress_state = np.ravel(stress_state)
 
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
+
+store_feat = pd.DataFrame(features_in)
+store_stress = pd.DataFrame(stress_state)
+
+table_feat = pa.Table.from_pandas(store_feat, preserve_index=False)
+table_stress = pa.Table.from_pandas(store_stress, preserve_index=False)
+
+pq.write_table(table_feat, 'Feature.parquet')
+pq.write_table(table_stress, 'Stress.parquet')
+
+Features_in = pq.read_table('Feature.parquet')
+Stress_state = pq.read_table('Stress.parquet')
+
+print("feat.shape:", features_in.shape)
+print('\n',"stress.shape:", stress_state.shape)
+print("Feat.shape:", Features_in.shape)
+print('\n',"Stress.shape:", Stress_state.shape)
 
 ########################################################################
 #LDA
-X_train, X_test, y_train, y_test = train_test_split(features_in, stress_state, test_size=0.25, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(Features_in, Stress_state, test_size=0.25, random_state=42)
 
 lda=LDA(n_components=1)
 train_lda=lda.fit(X_train, y_train)
