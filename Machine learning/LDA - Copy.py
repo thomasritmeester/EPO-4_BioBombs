@@ -19,6 +19,7 @@ print("Start!")
 data_set_path = "D:/Downloads/WESAD/WESAD/"
 subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
 
+
 features_base = np.asarray(np.zeros(54), dtype = "float")
 features_stress = np.asarray(np.zeros(54), dtype = "float")
 
@@ -80,10 +81,10 @@ for i in range(len(subject)):
 features_base = features_base[1:,:]
 features_stress = features_stress[1:,:]
 #print("feat_base:")
-#print(features_base)
+print(features_base)
 #print(features_base.shape)
 #print("feat_stress:")
-#print(features_stress)
+print(features_stress)
 #print(features_stress.shape)
 
 features_in = np.vstack((features_base,features_stress))
