@@ -96,20 +96,41 @@ stress_state = np.append( np.zeros(features_base.shape[0]) , np.ones(features_st
 #print(stress_state.shape)
 #stress_state = np.ravel(stress_state)
 
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
 
-########################################################################
-#LDA
-X_train, X_test, y_train, y_test = train_test_split(features_in, stress_state, test_size=0.25, random_state=42)
+store_feat = pd.DataFrame(features_in)
+store_stress = pd.DataFrame(stress_state)
 
-lda=LDA(n_components=1)
-train_lda=lda.fit(X_train, y_train)
-test_lda=lda.predict(X_test)
+table_feat = pa.Table.from_pandas(store_feat, preserve_index=False)
+table_stress = pa.Table.from_pandas(store_stress, preserve_index=False)
 
-# print(test_lda.shape)
-# print(y_test.shape)
+pq.write_table(table_feat, 'Feature.parquet')
+pq.write_table(table_stress, 'Stress.parquet')
 
-score= lda.score(X_test,y_test)
-print('Score:', score)
+Features_in = pq.read_table('Feature.parquet')
+Stress_state = pq.read_table('Stress.parquet')
+
+print("feat.shape:", features_in.shape)
+print('\n',"stress.shape:", stress_state.shape)
+print("Feat.shape:", Features_in.shape)
+print('\n',"Stress.shape:", Stress_state.shape)
+print("feat.type:", print(type(features_in)), "Feat.type", print(type(Features_in)))
+
+# ########################################################################
+# #LDA
+# X_train, X_test, y_train, y_test = train_test_split(Features_in, Stress_state, test_size=0.25, random_state=42)
+
+# lda=LDA(n_components=1)
+# train_lda=lda.fit(X_train, y_train)
+# test_lda=lda.predict(X_test)
+
+# # print(test_lda.shape)
+# # print(y_test.shape)
+
+# score= lda.score(X_test,y_test)
+# print('Score:', score)
 
 
 
@@ -159,16 +180,16 @@ print('Score:', score)
 #######################################################################
 ## K Cross fold validation
 
-from numpy import mean
-from numpy import std
-from sklearn.model_selection import KFold
-from sklearn.model_selection import cross_val_score
+# from numpy import mean
+# from numpy import std
+# from sklearn.model_selection import KFold
+# from sklearn.model_selection import cross_val_score
 
-# prepare the cross-validation procedure
-cv = KFold(n_splits=5, shuffle=True)
+# # prepare the cross-validation procedure
+# cv = KFold(n_splits=5, shuffle=True)
 
-# evaluate model
-scores = cross_val_score(lda, features_in, stress_state, scoring='accuracy', cv=cv, n_jobs=-1)
-# report performance
-print('Accuracy: %.3f (%.3f)' % (mean(scores), std(scores)))
-print(scores)
+# # evaluate model
+# scores = cross_val_score(lda, features_in, stress_state, scoring='accuracy', cv=cv, n_jobs=-1)
+# # report performance
+# print('Accuracy: %.3f (%.3f)' % (mean(scores), std(scores)))
+# print(scores)

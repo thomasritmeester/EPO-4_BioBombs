@@ -16,7 +16,7 @@ import scipy.signal
 import scipy.ndimage
 import pandas as pd
 import neurokit2 as nk
-from IPython.display import display
+#from IPython.display import display
 
 ##################################
 #Creating a function:
@@ -73,10 +73,10 @@ def ECG_freq_data(ecg):
     ECG_feat = pd.DataFrame()
     for i in range (t_tot):              #t_tot
         #ECG_feat_base = nk.ecg_clean( ecg_filt_b, sampling_rate=fs)
-        ECG_feat= nk.ecg_clean( ecg_tot[:,i], sampling_rate=fs)
+        #ECG_feat= nk.ecg_clean( ecg_tot[:,i], sampling_rate=fs)
 
         #peaks_b, info_b = nk.ecg_peaks(ECG_feat_base, sampling_rate=fs, correct_artifacts=True)
-        peaks, info = nk.ecg_peaks(ECG_feat, sampling_rate=fs, correct_artifacts=True)
+        peaks, info = nk.ecg_peaks(ecg_tot[:,i], sampling_rate=fs, correct_artifacts=True)
 
         #HRV time domain features only, no frequency or nonlinear measurements.
         #hrv_b=nk.hrv_time(peaks_b, sampling_rate=fs, show=False)
