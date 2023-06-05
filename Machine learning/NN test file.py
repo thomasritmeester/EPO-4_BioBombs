@@ -41,38 +41,72 @@ test_lda=lda.predict(X_test)
 
 score= lda.score(X_test,y_test)
 print('Score:', score)
-
-
-
+print('\n')
 
 ########################################################################
 #Neural Network
-input_nodes = X_train.shape[1]
-hidden_layer_1_nodes = 64
-hidden_layer_2_nodes = 128
-hidden_layer_3_nodes = 64
-output_layer = 1
 
-# initializing a sequential model
-full_model = Sequential()
+#Best Batchsize= 16
+#Best Hidden layer nodes= approx 16,32,32
+#Best droppout= 0.19
+#Best optimizer = Nadam
+#Best loss = "binary_crossentropy"
 
-# adding layers
-full_model.add(Dense(hidden_layer_1_nodes,input_dim=input_nodes , activation='relu'))
-full_model.add(Dropout(0.25))
-full_model.add(Dense(hidden_layer_2_nodes, activation='relu'))
-full_model.add(Dropout(0.25))
-full_model.add(Dense(hidden_layer_3_nodes, activation='relu'))
-full_model.add(Dropout(0.25))
-full_model.add(Dense(output_layer, activation='sigmoid'))
+print()
+for j in range (15):
 
-full_model.summary()
+   dropoutje=0.01+(0.01*j)
 
-# Compiling the ANN
-full_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+   input_nodes = X_train.shape[1]
+   hidden_layer_1_nodes = 16
+   hidden_layer_2_nodes = 32
+   hidden_layer_3_nodes = 32
+   output_layer = 1
 
-history = full_model.fit(X_train,y_train,validation_data=(X_test,y_test), epochs=512, batch_size=32, verbose=2)	
+   # initializing a sequential model
+   full_model = Sequential()
+ 
+   # adding layers
+   full_model.add(Dense(hidden_layer_1_nodes,input_dim=input_nodes , activation='relu'))
+   full_model.add(Dropout(dropoutje))
+   full_model.add(Dense(hidden_layer_2_nodes, activation='relu'))
+   full_model.add(Dropout(dropoutje))
+   full_model.add(Dense(hidden_layer_3_nodes, activation='relu'))
+   full_model.add(Dropout(dropoutje))
+   full_model.add(Dense(output_layer, activation='sigmoid'))
 
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-print("best accuracy:",np.max(history.history['accuracy']))
-print("best val-accuracy:", np.max(history.history['val_accuracy']))
+   #full_model.summary()
+
+   # Compiling the DNN
+   full_model.compile(optimizer="Nadam", loss="binary_crossentropy", metrics=['accuracy'])
+
+   history = full_model.fit(X_train,y_train,validation_data=(X_test,y_test), epochs=512, batch_size=(16), verbose=0)	
+
+   req1=np.mean(history.history['val_accuracy'])>np.mean(history.history['accuracy'])
+   req2=np.max(history.history['val_accuracy'])>np.max(history.history['accuracy'])
+   req3=np.max(history.history['val_accuracy'])>0.96
+
+   filepath = 'Weights-{epoch:03d}--{val_loss:.5f}.hdf5'
+   checkpoint = ModelCheckpoint(filepath, monitor='val-accuracy', verbose=1, save_best_only=True, mode='max')
+   callbacks_list = [checkpoint]  
+   print(j)
+   if (req1==True and req2==True and req3==True): 
+      full_model.save("Best NN")
+      plt.figure()
+      plt.plot(history.history['accuracy'], label = f"training{dropoutje}")
+      plt.plot(history.history['val_accuracy'], label = f"test{dropoutje}")
+      plt.legend()
+   
+   new_model = keras.models.load_model('Best NN')
+new_model.summary()
+# Evaluate the restored model
+loss, acc = new_model.evaluate(X_test, y_test, verbose=2)
+print('Restored model, accuracy: {:5.2f}%'.format(100 * acc))
+plt.legend()
+plt.plot(loss, label = "test")
+
+# print("dropout=",dropoutje, "for val-accuracy", np.max(history.history['val_accuracy']))
+# print(f"best accuracy of",np.max(history.history['accuracy']))
+# print(f"best val-accuracy of:", np.max(history.history['val_accuracy']))  
+# print(f"Overfitted?:", np.mean(history.history['val_accuracy'])-np.mean(history.history['accuracy']))
+# print('\n')
