@@ -11,186 +11,121 @@ from ECG_features2 import *
 from ECG_features3 import * 
 import warnings
 from EMG_Features import *
+from sklearn.utils import shuffle
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+#######################################################################
+#Initializing the file, then making random train and test sets.
 print("Start!")
 
 data_set_path = "D:/Downloads/WESAD/WESAD/"
-subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
+subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']  
+sub_shuf = shuffle(subject)
+print(sub_shuf)
+train=sub_shuf[:14]
+test=[sub_shuf[-1]]
 
-
-features_base = np.asarray(np.zeros(54), dtype = "float")
-features_stress = np.asarray(np.zeros(54), dtype = "float")
 
 #######################################################################
 #Reading out subjects and calling the feature extraction functions
-for i in range(len(subject)):     
-    print("subject: ", subject[i])
 
-    obj_data = {}
-
-    obj_data[subject[i]] = read_data_of_one_subject(data_set_path, subject[i])
-    #print(obj_data[subject[i]].data)
-    chest_data_dict = obj_data[subject[i]].get_chest_data()
-
-    labels = obj_data[subject[i]].get_labels() 
-    baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
-    stress = np.asarray([idx for idx,val in enumerate(labels) if val == 2])
-
-    eda_data_stress=chest_data_dict['EDA'][stress,0]
-    eda_data_base=chest_data_dict['EDA'][baseline,0]
-
-    emg_data_stress=chest_data_dict['EMG'][stress,0]
-    emg_data_base=chest_data_dict['EMG'][baseline,0]
+def extraction (train_test):
+    features_base = np.asarray(np.zeros(54), dtype = "float")
+    features_stress = np.asarray(np.zeros(54), dtype = "float")
     
-    temp_data_stress=chest_data_dict['Temp'][stress,0]
-    temp_data_base=chest_data_dict['Temp'][baseline,0]
+    for i in range(len(train_test)):     
+        print("subject: ", train_test[i])
 
-    ecg_data_stress=chest_data_dict['ECG'][stress,0]
-    ecg_data_base=chest_data_dict['ECG'][baseline,0]    
+        obj_data = {}
 
-    eda_features_base = calc_eda_features(eda_data_base)
-    eda_features_stress = calc_eda_features(eda_data_stress)
+        obj_data[train_test[i]] = read_data_of_one_subject(data_set_path, train_test[i])
+        #print(obj_data[subject[i]].data)
+        chest_data_dict = obj_data[train_test[i]].get_chest_data()
+
+        labels = obj_data[train_test[i]].get_labels() 
+        baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
+        stress = np.asarray([idx for idx,val in enumerate(labels) if val == 2])
+
+        eda_data_stress=chest_data_dict['EDA'][stress,0]
+        eda_data_base=chest_data_dict['EDA'][baseline,0]
+
+        emg_data_stress=chest_data_dict['EMG'][stress,0]
+        emg_data_base=chest_data_dict['EMG'][baseline,0]
+        
+        temp_data_stress=chest_data_dict['Temp'][stress,0]
+        temp_data_base=chest_data_dict['Temp'][baseline,0]
+
+        ecg_data_stress=chest_data_dict['ECG'][stress,0]
+        ecg_data_base=chest_data_dict['ECG'][baseline,0]    
+
+        eda_features_base = calc_eda_features(eda_data_base)
+        eda_features_stress = calc_eda_features(eda_data_stress)
+        
+        emg_features_base = calc_emg_features(emg_data_base)
+        emg_features_stress = calc_emg_features(emg_data_stress)
+
+        temp_features_base = calc_temp_features(temp_data_base)
+        temp_features_stress = calc_temp_features(temp_data_stress)
+
+        ecg_features_time_base = ECG_time_data(ecg_data_base)
+        ecg_features_time_stress = ECG_time_data(ecg_data_stress)
+
+        ecg_features_freq_base = ECG_freq_data(ecg_data_base)
+        ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
+
+        np.reshape(eda_features_stress, (1,-1))
+
+        #print(eda_features_stress.shape, temp_features_stress.shape,ecg_features_time_stress.shape, ecg_features_freq_stress.shape)
+
+        features_stress = np.vstack((features_stress, np.hstack((eda_features_stress, temp_features_stress, ecg_features_time_stress, ecg_features_freq_stress, emg_features_stress))  ))
+        features_base = np.vstack((features_base, np.hstack((eda_features_base, temp_features_base, ecg_features_time_base, ecg_features_freq_base, emg_features_base)) ))
+
+    features_base = features_base[1:,:]
+    features_stress = features_stress[1:,:]
+
+    print(features_base)
+    print(features_stress)
     
-    emg_features_base = calc_emg_features(emg_data_base)
-    emg_features_stress = calc_emg_features(emg_data_stress)
+    features_in = np.vstack((features_base,features_stress))
+    stress_state = np.append( np.zeros(features_base.shape[0]) , np.ones(features_stress.shape[0]) )
 
-    temp_features_base = calc_temp_features(temp_data_base)
-    temp_features_stress = calc_temp_features(temp_data_stress)
-
-    ecg_features_time_base = ECG_time_data(ecg_data_base)
-    ecg_features_time_stress = ECG_time_data(ecg_data_stress)
-
-    ecg_features_freq_base = ECG_freq_data(ecg_data_base)
-    ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
-
-    #print(ecg_features_freq_base)
-    #print(ecg_features_freq_base.shape)
-
-    #print(ecg_features_freq_stress)
-    #print(ecg_features_freq_stress.shape)
-
-    np.reshape(eda_features_stress, (1,-1))
-
-    #print(eda_features_stress.shape, temp_features_stress.shape,ecg_features_time_stress.shape, ecg_features_freq_stress.shape)
-
-    features_stress = np.vstack((features_stress, np.hstack((eda_features_stress, temp_features_stress, ecg_features_time_stress, ecg_features_freq_stress, emg_features_stress))  ))
-    features_base = np.vstack((features_base, np.hstack((eda_features_base, temp_features_base, ecg_features_time_base, ecg_features_freq_base, emg_features_base)) ))
-
-features_base = features_base[1:,:]
-features_stress = features_stress[1:,:]
-#print("feat_base:")
-print(features_base)
-#print(features_base.shape)
-#print("feat_stress:")
-print(features_stress)
-#print(features_stress.shape)
-
-features_in = np.vstack((features_base,features_stress))
-#print("feat_in:")
-#print(features_in)
-#print(features_in.shape)
-stress_state = np.append( np.zeros(features_base.shape[0]) , np.ones(features_stress.shape[0]) )
-#print("stress_state:")
-#print(stress_state)
-#print(stress_state.shape)
-#stress_state = np.ravel(stress_state)
+    return(features_in, stress_state)
+    
 
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-store_feat = pd.DataFrame(features_in)
-store_stress = pd.DataFrame(stress_state)
+feat_test, stress_test = extraction(test)
+feat_train, stress_train = extraction(train)
 
-table_feat = pa.Table.from_pandas(store_feat, preserve_index=False)
-table_stress = pa.Table.from_pandas(store_stress, preserve_index=False)
+print("feat_train shape=", feat_train.size, '\n', "stress_train shape", stress_train.size)
+print("feat_test shape=", feat_test.size, '\n', "stress_test shape", stress_test.size)
 
-pq.write_table(table_feat, 'Feature.parquet')
-pq.write_table(table_stress, 'Stress.parquet')
+def saving(feat, stress_state):
+    store_feat = pd.DataFrame(feat)
+    store_stress = pd.DataFrame(stress_state)
 
-Features_in = pq.read_table('Feature.parquet')
-Stress_state = pq.read_table('Stress.parquet')
+    table_feat = pa.Table.from_pandas(store_feat, preserve_index=False)
+    table_stress = pa.Table.from_pandas(store_stress, preserve_index=False)
 
-print("feat.shape:", features_in.shape)
-print('\n',"stress.shape:", stress_state.shape)
-print("Feat.shape:", Features_in.shape)
-print('\n',"Stress.shape:", Stress_state.shape)
-print("feat.type:", print(type(features_in)), "Feat.type", print(type(Features_in)))
+    
+    if(feat.size>4000):
+        print("if")
+        pq.write_table(table_feat, 'Feature_train.parquet')
+        pq.write_table(table_stress, 'Stress_train.parquet')
 
-# ########################################################################
-# #LDA
-# X_train, X_test, y_train, y_test = train_test_split(Features_in, Stress_state, test_size=0.25, random_state=42)
-
-# lda=LDA(n_components=1)
-# train_lda=lda.fit(X_train, y_train)
-# test_lda=lda.predict(X_test)
-
-# # print(test_lda.shape)
-# # print(y_test.shape)
-
-# score= lda.score(X_test,y_test)
-# print('Score:', score)
+    else:
+        print("else")
+        pq.write_table(table_feat, 'Feature_test.parquet')
+        pq.write_table(table_stress, 'Stress_test.parquet')
 
 
+    return 
 
+saving(feat_test, stress_test)
+saving(feat_train, stress_train)
 
-######################################################################
-#Neural Network
-# from keras.models import Sequential
-# from keras.layers import Dense, Dropout
-# from keras.callbacks import ModelCheckpoint
-# import keras as keras
+#print("type after saving", type(feat_train))
 
-# # # Create simple Neural Network model
-# input_nodes = X_train.shape[1]
-# hidden_layer_1_nodes = 1
-# hidden_layer_2_nodes = 128
-# hidden_layer_3_nodes = 256
-# output_layer = 1
-
-# # initializing a sequential model
-# full_model = Sequential()
-
-# # adding layers
-# full_model.add(Dense(hidden_layer_1_nodes, activation='relu'))
-# full_model.add(Dropout(0.25))
-# full_model.add(Dense(hidden_layer_2_nodes, activation='relu'))
-# full_model.add(Dropout(0.25))
-# full_model.add(Dense(hidden_layer_3_nodes, activation='relu'))
-# full_model.add(Dropout(0.25))
-
-# full_model.add(Dense(output_layer, activation='relu'))
-
-# # Compiling the DNN
-# full_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-# full_model.summary()
-
-# checkpoint_name = 'Weights-{epoch:03d}--{val_accuracy:.5f}.hdf5' 
-# checkpoint = ModelCheckpoint(checkpoint_name, monitor='val_accuracy', verbose = 0, save_best_only = True, mode ='auto')
-# callbacks_list = [checkpoint]
-
-# history = full_model.fit(X_train,y_train,validation_data=(X_test,y_test), epochs=500, batch_size=32, verbose=1)	
-
-# plt.plot(history.history['accuracy'])
-# plt.plot(history.history['val_accuracy'])
-# print("best accuracy:",np.max(history.history['accuracy']))
-# print("best val-accuracy:", np.max(history.history['val_accuracy']))
-
-#######################################################################
-## K Cross fold validation
-
-# from numpy import mean
-# from numpy import std
-# from sklearn.model_selection import KFold
-# from sklearn.model_selection import cross_val_score
-
-# # prepare the cross-validation procedure
-# cv = KFold(n_splits=5, shuffle=True)
-
-# # evaluate model
-# scores = cross_val_score(lda, features_in, stress_state, scoring='accuracy', cv=cv, n_jobs=-1)
-# # report performance
-# print('Accuracy: %.3f (%.3f)' % (mean(scores), std(scores)))
-# print(scores)
