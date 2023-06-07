@@ -39,6 +39,8 @@ for i in range(len(subject)):
     #print(obj_data[subject[i]].data)
     chest_data_dict = obj_data[subject[i]].get_chest_data()
 
+    print(type(chest_data_dict))
+
     labels = obj_data[subject[i]].get_labels() 
     baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
     stress = np.asarray([idx for idx,val in enumerate(labels) if val == 2])
