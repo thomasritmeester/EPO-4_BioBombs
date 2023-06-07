@@ -29,7 +29,7 @@ features_stress = pd.DataFrame()
 features_in_df = pd.DataFrame()
 
 sensor_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\ECGdata.csv")
-
+print(sensor_data)
 #acc_chest_stress=sensor_data['ACC1, ACC2, ACC3']
 
 eda_data_stress=sensor_data['EDA']
