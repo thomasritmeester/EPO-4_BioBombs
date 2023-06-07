@@ -73,7 +73,7 @@ for j in range (10):
     full_model.add(Dense(hidden_layer_2_nodes, activation='relu'))
     #full_model.add(Dropout(dropoutje))
     full_model.add(Dense(hidden_layer_3_nodes, activation='relu'))
-    full_model.add(Dropout(dropoutje))
+    #full_model.add(Dropout(dropoutje))
     full_model.add(Dense(output_layer, activation='sigmoid'))
 
     #full_model.summary()
