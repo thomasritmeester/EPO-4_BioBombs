@@ -13,43 +13,8 @@ import matplotlib.pyplot as plt
 import scipy.signal
 import scipy.ndimage
 from EDA import EDAprep
+import pandas as pd
 
-#Extracting the data from the 
-data_set_path = "C:/Users/semve/OneDrive/Documenten/WESAD/WESAD/"
-subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
-
-class read_data_of_one_subject:
-    """Read data from WESAD dataset"""
-    def __init__(self, path, subject):
-        self.keys = ['label', 'subject', 'signal']
-        self.signal_keys = ['wrist', 'chest']
-        self.chest_sensor_keys = ['ACC', 'ECG', 'EDA', 'EMG', 'Resp', 'Temp']
-        self.wrist_sensor_keys = ['ACC', 'BVP', 'EDA', 'TEMP']
-        #os.chdir(path)
-        #os.chdir(subject)
-        with open(path + subject +'/'+subject + '.pkl', 'rb') as file:
-            data = pickle.load(file, encoding='latin1')
-        self.data = data
-
-    def get_labels(self):
-        return self.data[self.keys[0]]
-
-    def get_wrist_data(self):
-        """"""
-        #label = self.data[self.keys[0]]
-        assert subject == self.data[self.keys[1]]
-        signal = self.data[self.keys[2]]
-        wrist_data = signal[self.signal_keys[0]]
-        #wrist_ACC = wrist_data[self.wrist_sensor_keys[0]]
-        #wrist_ECG = wrist_data[self.wrist_sensor_keys[1]]
-        return wrist_data
-
-    def get_chest_data(self):
-        """"""
-        signal = self.data[self.keys[2]]
-        chest_data = signal[self.signal_keys[1]]
-        return chest_data
-    
 
 #print(len(subject))
 fs = 700
@@ -89,7 +54,7 @@ def calc_phasic_data(phasic, peak, height):
     return onset_amp_index, half_amp_index, offset_amp_index
 
 
-def calc_phasic_features(phasic, state):
+def calc_phasic_features(phasic, eda_complete):
 
     temp_array = np.asarray([], dtype = "float")
 
@@ -122,38 +87,52 @@ def calc_phasic_features(phasic, state):
         orienting_time = np.append(orienting_time, (offset_amp_index - onset_amp_index)/fs)
         half_recov_time = np.append(half_recov_time, (half_amp_index - peaks[i])/fs)
 
-    cv_mg = np.std(orienting_mag)/np.mean(orienting_mag)
-    cv_orient = np.std(orienting_time)/np.mean(orienting_time)
-    cv_recov = np.std(half_recov_time)/np.mean(half_recov_time)
+    #Calculate area under normalised phasic curve
+    phasic_norm = (phasic - np.mean(phasic))/np.std(phasic)
+    area_under = np.sum(phasic_norm)
+    minimum = np.amin(phasic)
+    maximum = np.amax(phasic)
+    drange = (maximum-minimum)
 
+
+    temp_array = np.append(temp_array, np.mean(eda_complete))
+    temp_array = np.append(temp_array, np.std(eda_complete))
+    temp_array = np.append(temp_array, np.mean(phasic))
+    temp_array = np.append(temp_array, np.std(phasic))
+    temp_array = np.append(temp_array, len(peaks))
+    temp_array = np.append(temp_array, area_under)
+    temp_array = np.append(temp_array, drange)
     temp_array = np.append(temp_array, np.mean(orienting_mag))   
     temp_array = np.append(temp_array, np.std(orienting_mag))
-    temp_array = np.append(temp_array, cv_mg)
     temp_array = np.append(temp_array, np.mean(orienting_time))   
     temp_array = np.append(temp_array, np.std(orienting_time))
-    temp_array = np.append(temp_array, cv_orient)
     temp_array = np.append(temp_array, np.mean(half_recov_time))   
     temp_array = np.append(temp_array, np.std(half_recov_time))
-    temp_array = np.append(temp_array, cv_recov)
 
 
     return temp_array
 
 def calc_eda_features(eda_data):
 
-    eda_features = np.asarray([0,0,0,0,0,0,0,0,0], dtype = "float")
+    #eda_features = np.zeros(13)
+
+    eda_features = pd.DataFrame()
 
     fs=700
     # cut a smaller window
-    t_tot=(len(eda_data)//(int(0.5*60*fs)))
+    wndw = int(0.5*60*fs)
+    t_tot=(len(eda_data)//(int(wndw)))
+
     
     eda_data_tot=np.empty([21000,t_tot])
 
     for k in range(t_tot): 
-        eda1=eda_data[k*int(0.5*60*700):(k+1)*int(0.5*60*700)]
-        t1=np.arange(0,eda1.size*(1/fs),(1/fs))
-        t1=t1[:eda1.size]
+        eda1=eda_data[k*int(wndw):(k+1)*int((wndw))]
+        t1=np.arange(0,len(eda1)*(1/fs),(1/fs))
+        t1=t1[:len(eda1)]
         eda_data_tot[:,k] = eda1
+
+        
             
     #print(eda1.shape)
     #print(eda_stress_tot.shape)
@@ -161,10 +140,10 @@ def calc_eda_features(eda_data):
     #print(eda2.shape)
     #print(eda_stress_tot.shape)
 
-    eda_comp=np.zeros((3,11000,t_tot))
+    eda_comp=np.zeros((3,len(eda_data_tot[:,0]),t_tot))
     EDA = []
     for j in range (t_tot): 
-        EDA = EDAprep(fs, eda_data_tot[:,j],t_tot,"baseline")
+        EDA = EDAprep(fs, eda_data_tot[:,j],"baseline")
 
         #EDA.plotdata()
         eda_lp = EDA.filtering_data()
@@ -172,6 +151,8 @@ def calc_eda_features(eda_data):
         eda_comp[:,:,j]=EDA.decompose_data(eda_sm)
         
         phasic = eda_comp[1][:,j]
+        eda_complete = eda_comp[0][:,j]
+
 
         # plt.figure(figsize=(12,4))
         # plt.xlim([0,30])
@@ -185,12 +166,15 @@ def calc_eda_features(eda_data):
         #For the state, True is stress and False is base
             
             
-        feature = calc_phasic_features(phasic, True)
+        feature = calc_phasic_features(phasic, eda_complete)
         #print(np.shape(stress_feature))
 
-            
-            
-        eda_features = np.vstack((eda_features,feature))
+        feature_set=pd.DataFrame([feature], columns=['EDA_mean', 'EDA_std', 'Phasic_mean', 'Phasic_std', 'No.Peaks', 'Area', 'Dynamic_Range', 'Orienting_mag_mean', 'Orienting_mag_std', 'orient_time_mean', 'orient_time_std', 'recov_time_mean', 'recov_time_std'])
 
-    #print(eda_features_base)
-    return eda_features[1:,:]
+        eda_features = pd.concat([eda_features, feature_set], ignore_index=True)
+            
+            
+        #eda_features = np.vstack((eda_features,feature))
+
+   
+    return eda_features
