@@ -29,12 +29,13 @@ features_stress = pd.DataFrame()
 features_in_df = pd.DataFrame()
 
 sensor_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\ECGdata.csv")
+print(sensor_data)
 
 #acc_chest_stress=sensor_data['ACC1, ACC2, ACC3']
 
 eda_data_stress=sensor_data['EDA']
 eda_data_base=sensor_data['EDA']
-
+print(eda_data_stress, eda_data_stress.shape)
 emg_data_stress=sensor_data['EMG']
 emg_data_base=sensor_data['EMG']
 
@@ -48,7 +49,7 @@ ecg_data_base=sensor_data['ECG']
 baseline_signals = [eda_data_base, emg_data_base, ecg_data_base]
 stress_signals = [eda_data_stress, emg_data_stress, ecg_data_stress]
 
-eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
+#eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
 
 eda_features_base = calc_eda_features(eda_data_base)
 eda_features_stress = calc_eda_features(eda_data_stress)
@@ -65,20 +66,20 @@ ecg_features_time_stress = ECG_time_data(ecg_data_stress)
 ecg_features_freq_base = ECG_freq_data(ecg_data_base)
 ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
 
-acc_features_stress = acc_features(acc_wrist_stress)
-acc_features_base = acc_features(acc_wrist_baseline)
+#acc_features_stress = acc_features(acc_wrist_stress)
+#acc_features_base = acc_features(acc_wrist_baseline)
 
 base_dict['EDA'] = eda_features_base
 base_dict['EMG'] = emg_features_base
 base_dict['TEMP'] = temp_features_base
 base_dict['ECG'] = pd.concat([ecg_features_time_base, ecg_features_freq_base], axis = 1)
-base_dict['ACC'] = acc_features_base
+#base_dict['ACC'] = acc_features_base
 
 stress_dict['EDA'] = eda_features_stress
 stress_dict['EMG'] = emg_features_stress
 stress_dict['TEMP'] = temp_features_stress
 stress_dict['ECG'] = pd.concat([ecg_features_time_stress, ecg_features_freq_stress], axis = 1)
-stress_dict['ACC'] = acc_features_stress
+#stress_dict['ACC'] = acc_features_stress
 
 features_stress = pd.concat([features_stress, pd.concat(stress_dict, axis = 1)], ignore_index = True)
 features_base = pd.concat([features_base, pd.concat(base_dict, axis = 1)], ignore_index = True)
