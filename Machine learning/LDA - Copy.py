@@ -5,12 +5,15 @@ from scipy.signal import chirp, find_peaks, peak_widths, peak_prominences
 from scipy.signal import chirp, find_peaks, peak_widths, peak_prominences
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.model_selection import train_test_split
-from EDA_Features2 import *
-from TEMP import *
-from ECG_features2 import * 
-from ECG_features3 import * 
-import warnings
+from EDA_Features import *
+from Temperature_Features import *
+from ECG_features_time import * 
+from ECG_features_freq import *
 from EMG_Features import *
+from ACC_features import *
+from wesad import read_data_of_one_subject
+import warnings
+
 from sklearn.utils import shuffle
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
