@@ -25,7 +25,7 @@ print("Start!")
 data_set_path = "D:/Downloads/WESAD/WESAD/"
 subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
 
-sub_shuf = shuffle(train_test)
+sub_shuf = shuffle(sensor_data)
 print(sub_shuf)
 train=sub_shuf[:14]
 test=[sub_shuf[-1]]  
@@ -51,11 +51,15 @@ def extraction (train_test):
         obj_data[train_test[i]] = read_data_of_one_subject(data_set_path, train_test[i])
         #print(obj_data[subject[i]].data)
         chest_data_dict = obj_data[train_test[i]].get_chest_data()
-
+        print(type(chest_data_dict))
         labels = obj_data[train_test[i]].get_labels() 
         baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
         stress = np.asarray([idx for idx,val in enumerate(labels) if val == 2])
 
+
+        ecg_data_stress=chest_data_dict['ECG'][stress,0]
+        ecg_data_base=chest_data_dict['ECG'][baseline,0]
+        
         acc_chest_stress=chest_data_dict['ACC'][stress]
 
         eda_data_stress=chest_data_dict['EDA'][stress,0]
@@ -66,9 +70,6 @@ def extraction (train_test):
         
         temp_data_stress=chest_data_dict['Temp'][stress,0]
         temp_data_base=chest_data_dict['Temp'][baseline,0]
-
-        ecg_data_stress=chest_data_dict['ECG'][stress,0]
-        ecg_data_base=chest_data_dict['ECG'][baseline,0]
 
         #Signals to be processed by ACC
         baseline_signals = [eda_data_base, emg_data_base, ecg_data_base]
@@ -87,7 +88,8 @@ def extraction (train_test):
 
         ecg_features_time_base = ECG_time_data(ecg_data_base)
         ecg_features_time_stress = ECG_time_data(ecg_data_stress)
-
+        print(type(ecg_features_time_base))
+        
         ecg_features_freq_base = ECG_freq_data(ecg_data_base)
         ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
 
@@ -186,10 +188,10 @@ from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 from sklearn.linear_model import LogisticRegression
 
-
+#clf = LogisticRegression(random_state=0).fit(X_train, y)
 
 # prepare the cross-validation procedure
-cv = KFold(n_splits=15, shuffle=False)
+cv = KFold(n_splits=5, shuffle=False)
 
 # evaluate model
 scores = cross_val_score(lda, X_train, y_train, scoring='accuracy', cv=cv, n_jobs=-1)

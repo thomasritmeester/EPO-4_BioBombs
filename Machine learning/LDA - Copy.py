@@ -23,8 +23,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 print("Start!")
 
 data_set_path = "D:/Downloads/WESAD/WESAD/"
-train_test = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']  
-sub_shuf = shuffle(train_test)
+sensor_data = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']  
+sub_shuf = shuffle(sensor_data)
 print(sub_shuf)
 train=sub_shuf[:14]
 test=[sub_shuf[-1]]

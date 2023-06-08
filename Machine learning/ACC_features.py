@@ -20,7 +20,7 @@ from wesad import read_data_of_one_subject
 from itertools import compress
 
 data_set_path = "D:/Downloads/WESAD/WESAD/"
-train_test = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
+sensor_data = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
 
 #wrist sampling frequencies
 fs_dict = {'ACC': 32, 'label': 700}
@@ -31,12 +31,12 @@ def remove_movement(chest_data_dict, subject_id, stress, baseline, baseline_sign
     obj_data = {}
     fs = 700
 
-    obj_data[train_test[subject_id]] = read_data_of_one_subject(data_set_path, train_test[subject_id])
+    obj_data[sensor_data[subject_id]] = read_data_of_one_subject(data_set_path, sensor_data[subject_id])
 
     #print(obj_data[subject[i]].data)
-    wrist_data_dict = obj_data[train_test[subject_id]].get_wrist_data()
+    wrist_data_dict = obj_data[sensor_data[subject_id]].get_wrist_data()
 
-    labels = obj_data[train_test[subject_id]].labels
+    labels = obj_data[sensor_data[subject_id]].labels
 
     #Chest ACC data
     acc_chest_stress=chest_data_dict['ACC'][stress]
