@@ -24,10 +24,10 @@ print("Start!")
 
 data_set_path = "D:/Downloads/WESAD/WESAD/"
 subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']  
-sub_shuf = shuffle(subject)
-print(sub_shuf)
-train=sub_shuf[:14]
-test=[sub_shuf[-1]]
+# sub_shuf = shuffle(subject)
+# print(sub_shuf)
+# train=sub_shuf[:14]
+# test=[sub_shuf[-1]]
 
 #features_base = np.asarray(np.zeros(77), dtype = "float")
 #features_stress = np.asarray(np.zeros(77), dtype = "float")
@@ -46,8 +46,6 @@ for i in range(len(subject)):
     obj_data[subject[i]] = read_data_of_one_subject(data_set_path, subject[i])
     #print(obj_data[subject[i]].data)
     chest_data_dict = obj_data[subject[i]].get_chest_data()
-
-    print(type(chest_data_dict))
 
     labels = obj_data[subject[i]].get_labels() 
     baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
@@ -71,7 +69,7 @@ for i in range(len(subject)):
     baseline_signals = [eda_data_base, emg_data_base, ecg_data_base]
     stress_signals = [eda_data_stress, emg_data_stress, ecg_data_stress]
 
-    #eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
+    eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
 
     eda_features_base = calc_eda_features(eda_data_base)
     eda_features_stress = calc_eda_features(eda_data_stress)
@@ -124,16 +122,16 @@ everything_all.to_csv('all_data.csv')
 
 print(np.shape(features_in))
 
-#X_train, X_test, y_train, y_test = train_test_split(features_in, stress_state, test_size=0.33, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(features_in, stress_state, test_size=0.33, random_state=42)
 
 lda=LDA(n_components=1)
-#train_lda=lda.fit(X_train, y_train)
-#test_lda=lda.predict(X_test)
+train_lda=lda.fit(X_train, y_train)
+test_lda=lda.predict(X_test)
 
-#print(test_lda.shape)
-#print(y_test.shape)
+print(test_lda.shape)
+print(y_test.shape)
 
-#score= lda.score(X_test,y_test)
+score= lda.score(X_test,y_test)
 #print(score)
 
 # K Cross fold validation

@@ -38,7 +38,7 @@ def extraction (train_test):
     features_stress = np.asarray(np.zeros(54), dtype = "float")
     
     for i in range(len(train_test)):     
-        print("subject: ", train_test[i])
+        print("Test subject: ", train_test[i])
 
         obj_data = {}
 
@@ -49,6 +49,8 @@ def extraction (train_test):
         labels = obj_data[train_test[i]].get_labels() 
         baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
         stress = np.asarray([idx for idx,val in enumerate(labels) if val == 2])
+
+        acc_chest_stress=chest_data_dict['ACC'][stress]
 
         eda_data_stress=chest_data_dict['EDA'][stress,0]
         eda_data_base=chest_data_dict['EDA'][baseline,0]
@@ -62,6 +64,8 @@ def extraction (train_test):
         ecg_data_stress=chest_data_dict['ECG'][stress,0]
         ecg_data_base=chest_data_dict['ECG'][baseline,0]    
 
+        eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
+        
         eda_features_base = calc_eda_features(eda_data_base)
         eda_features_stress = calc_eda_features(eda_data_stress)
         
@@ -76,6 +80,9 @@ def extraction (train_test):
 
         ecg_features_freq_base = ECG_freq_data(ecg_data_base)
         ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
+
+        acc_features_stress = acc_features(acc_wrist_stress)
+        acc_features_base = acc_features(acc_wrist_baseline)
 
         np.reshape(eda_features_stress, (1,-1))
 

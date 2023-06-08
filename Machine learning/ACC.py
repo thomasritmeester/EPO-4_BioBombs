@@ -23,17 +23,17 @@ class ACCprep:
         self.title = title
         self.Fs=Fs
         self.timestamp = timestamp
-    def plotdata(self,sig,title=""):
-        # cut a smaller window      
-        if title=="":
-            title=self.title
-        plt.figure(figsize=(12,4))
-        plt.plot(self.timestamp,sig)
-        plt.title("input ACC "+ title)
-        plt.xlabel('$Time (s)$') 
-        plt.xlim(0,max(self.timestamp))
-        plt.ylabel('$ACC$')
-        plt.show()
+    # def plotdata(self,sig,title=""):
+    #     # cut a smaller window      
+    #     # if title=="":
+    #     #     title=self.title
+    #     # plt.figure(figsize=(12,4))
+    #     # plt.plot(self.timestamp,sig)
+    #     # plt.title("input ACC "+ title)
+    #     # plt.xlabel('$Time (s)$') 
+    #     # plt.xlim(0,max(self.timestamp))
+    #     # plt.ylabel('$ACC$')
+    #     # plt.show()
         
     def filtering_data(self,sig):
         nyq=self.Fs/2
@@ -49,14 +49,14 @@ class ACCprep:
         sos = butter(order, corner, btype = 'lowpass', output='sos')
         sig_HL= sosfiltfilt(sos,sig_H)
         
-        plt.figure(figsize=(10,4))
-        plt.plot(self.timestamp/self.Fs,sig - np.mean(sig), label="raw ACC") ###########################
-        plt.plot(self.timestamp/self.Fs,sig_HL*10, label="ACC bandpass filtered")
-        plt.title("Filtered ACC signal")
-        plt.xlabel('$Time (s)$') 
-        plt.ylabel('$ACC$') 
-        plt.legend()
-        plt.show()
+        # plt.figure(figsize=(10,4))
+        # plt.plot(self.timestamp/self.Fs,sig - np.mean(sig), label="raw ACC") ###########################
+        # plt.plot(self.timestamp/self.Fs,sig_HL*10, label="ACC bandpass filtered")
+        # plt.title("Filtered ACC signal")
+        # plt.xlabel('$Time (s)$') 
+        # plt.ylabel('$ACC$') 
+        # plt.legend()
+        # plt.show()
         return sig_HL
         
 # ACC ={}

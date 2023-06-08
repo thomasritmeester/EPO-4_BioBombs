@@ -19,7 +19,7 @@ from scipy import interpolate
 from wesad import read_data_of_one_subject
 from itertools import compress
 
-data_set_path = "WESAD/"
+data_set_path = "D:/Downloads/WESAD/WESAD/"
 subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
 
 #wrist sampling frequencies
