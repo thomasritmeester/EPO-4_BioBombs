@@ -89,7 +89,7 @@ def calc_phasic_features(phasic, eda_complete):
 
     #Calculate area under normalised phasic curve
     phasic_norm = (phasic - np.mean(phasic))/np.std(phasic)
-    area_under = np.sum(phasic_norm)
+    area_under = np.sum(np.abs(phasic_norm))
     minimum = np.amin(phasic)
     maximum = np.amax(phasic)
     drange = (maximum-minimum)
