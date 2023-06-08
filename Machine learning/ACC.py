@@ -37,11 +37,11 @@ class ACCprep:
         
     def filtering_data(self,sig):
         nyq=self.Fs/2
-        corner=0.5
+        corner= 0.5
         corner= corner/nyq
         order = 2
         sos = butter(order, corner, btype = 'highpass', output='sos')
-        print(sig)
+        #print(sig)
         sig_H= sosfiltfilt(sos,sig)###################
         #w, h = freqz(b, a, fs=Fs)
         
