@@ -71,7 +71,7 @@ for i in range(len(subject)):
     baseline_signals = [eda_data_base, emg_data_base, ecg_data_base]
     stress_signals = [eda_data_stress, emg_data_stress, ecg_data_stress]
 
-    eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
+    #eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
 
     eda_features_base = calc_eda_features(eda_data_base)
     eda_features_stress = calc_eda_features(eda_data_stress)
