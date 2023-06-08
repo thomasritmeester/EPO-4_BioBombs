@@ -14,12 +14,20 @@ from ACC_features import *
 from wesad import read_data_of_one_subject
 import warnings
 
+from sklearn.utils import shuffle
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+#######################################################################
+#Initializing the file, then making random train and test sets.
 print("Start!")
 
-data_set_path = "WESAD/" ##CHANGE DEPENDING ON FOLDER LOCATION
-subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
+data_set_path = "D:/Downloads/WESAD/WESAD/"
+subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']  
+sub_shuf = shuffle(subject)
+print(sub_shuf)
+train=sub_shuf[:14]
+test=[sub_shuf[-1]]
 
 #features_base = np.asarray(np.zeros(77), dtype = "float")
 #features_stress = np.asarray(np.zeros(77), dtype = "float")
