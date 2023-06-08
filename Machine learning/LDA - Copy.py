@@ -23,8 +23,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 print("Start!")
 
 data_set_path = "D:/Downloads/WESAD/WESAD/"
-subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']  
-sub_shuf = shuffle(subject)
+train_test = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']  
+sub_shuf = shuffle(train_test)
 print(sub_shuf)
 train=sub_shuf[:14]
 test=[sub_shuf[-1]]
@@ -88,8 +88,8 @@ def extraction (train_test):
 
         #print(eda_features_stress.shape, temp_features_stress.shape,ecg_features_time_stress.shape, ecg_features_freq_stress.shape)
 
-        features_stress = np.vstack((features_stress, np.hstack((eda_features_stress, temp_features_stress, ecg_features_time_stress, ecg_features_freq_stress, emg_features_stress))  ))
-        features_base = np.vstack((features_base, np.hstack((eda_features_base, temp_features_base, ecg_features_time_base, ecg_features_freq_base, emg_features_base)) ))
+        features_stress = np.vstack((features_stress, np.hstack((eda_features_stress, temp_features_stress, ecg_features_time_stress, ecg_features_freq_stress, emg_features_stress))))
+        features_base = np.vstack((features_base, np.hstack((eda_features_base, temp_features_base, ecg_features_time_base, ecg_features_freq_base, emg_features_base))))
 
     features_base = features_base[1:,:]
     features_stress = features_stress[1:,:]
