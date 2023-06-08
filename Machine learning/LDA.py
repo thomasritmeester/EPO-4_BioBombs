@@ -18,7 +18,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 print("Start!")
 
-data_set_path = "WESAD/" ##CHANGE DEPENDING ON FOLDER LOCATION
+data_set_path = "D:/Downloads/WESAD/WESAD/" ##CHANGE DEPENDING ON FOLDER LOCATION
 subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
 
 #features_base = np.asarray(np.zeros(77), dtype = "float")
@@ -38,6 +38,8 @@ for i in range(len(subject)):
     obj_data[subject[i]] = read_data_of_one_subject(data_set_path, subject[i])
     #print(obj_data[subject[i]].data)
     chest_data_dict = obj_data[subject[i]].get_chest_data()
+
+    print(type(chest_data_dict))
 
     labels = obj_data[subject[i]].get_labels() 
     baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
