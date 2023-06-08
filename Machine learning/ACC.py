@@ -37,11 +37,11 @@ class ACCprep:
         
     def filtering_data(self,sig):
         nyq=self.Fs/2
-        corner=0.5
+        corner= 0.5
         corner= corner/nyq
         order = 2
         sos = butter(order, corner, btype = 'highpass', output='sos')
-        print(sig)
+        #print(sig)
         sig_H= sosfiltfilt(sos,sig)###################
         #w, h = freqz(b, a, fs=Fs)
         
@@ -49,14 +49,14 @@ class ACCprep:
         sos = butter(order, corner, btype = 'lowpass', output='sos')
         sig_HL= sosfiltfilt(sos,sig_H)
         
-        plt.figure(figsize=(10,4))
-        plt.plot(self.timestamp/self.Fs,sig - np.mean(sig), label="raw ACC") ###########################
-        plt.plot(self.timestamp/self.Fs,sig_HL*10, label="ACC bandpass filtered")
-        plt.title("Filtered ACC signal")
-        plt.xlabel('$Time (s)$') 
-        plt.ylabel('$ACC$') 
-        plt.legend()
-        plt.show()
+        # plt.figure(figsize=(10,4))
+        # plt.plot(self.timestamp/self.Fs,sig - np.mean(sig), label="raw ACC") ###########################
+        # plt.plot(self.timestamp/self.Fs,sig_HL*10, label="ACC bandpass filtered")
+        # plt.title("Filtered ACC signal")
+        # plt.xlabel('$Time (s)$') 
+        # plt.ylabel('$ACC$') 
+        # plt.legend()
+        # plt.show()
         return sig_HL
         
 # ACC ={}
