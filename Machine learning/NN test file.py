@@ -83,8 +83,9 @@ for j in range (10):
 
     history = full_model.fit(X_train,y_train,validation_data=(X_test,y_test), epochs=512, batch_size=(16), verbose=0)	
 
-    req1=np.mean(history.history['val_accuracy'])>np.mean(history.history['accuracy'])
-    req2=np.max(history.history['val_accuracy'])>np.max(history.history['accuracy'])
+    req1=np.mean(history.history['val_accuracy'])>=np.mean(history.history['accuracy'])
+    req2=np.max(history.history['val_accuracy'])>=np.max(history.history['accuracy'])
+    print("Val:",np.max(history.history['val_accuracy']), "Acc", np.max(history.history['accuracy']))
     #req3=np.max(history.history['val_accuracy'])>0.96
     if (req1==True and req2==True):                                                        # (req1==True and req2==True):   and 
         print("This is the accuracy:", np.max(history.history['accuracy']))
