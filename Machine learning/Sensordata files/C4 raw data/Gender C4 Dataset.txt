@@ -1,0 +1,11 @@
+P3 - vrouw
+P4 - Man
+P7 - Man
+P6 - Vrouw
+P5 - Man
+P2 - Vrouw 
+P1 - Man
+P12 - Man
+P11 - Vrouw
+P10 - Vrouw
+P9 - Man
