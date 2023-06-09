@@ -22,7 +22,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 #Initializing the file, then making random train and test sets.
 print("Start!")
 
-sensor_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\ECGdata.csv")
+sensor_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\Sem_test_stress.csv")
 #print(sensor_data)
 
 #features_base = np.asarray(np.zeros(77), dtype = "float")
@@ -42,13 +42,13 @@ sensor_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\S
 
 ecg_data_base=sensor_data['ECG']
 ecg_data_base=ecg_data_base.to_numpy()
-print(type(ecg_data_base))
-print(len(ecg_data_base))
+#print(type(ecg_data_base))
+print((ecg_data_base))
 #print("ecg data=", ecg_data_base)
 ecg_features_time_base = ECG_time_data(ecg_data_base)
 ecg_features_freq_base = ECG_freq_data(ecg_data_base)
 
-print("ecg feat_time=", ecg_features_freq_base)
+print("ecg feat_time=", ecg_features_time_base.shape)
 #print(obj_data[subject[i]].data)
 # sensor_data = obj_data[sensor_data[i]].get_chest_data()
 

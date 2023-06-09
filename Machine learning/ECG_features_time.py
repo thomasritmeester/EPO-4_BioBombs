@@ -31,14 +31,14 @@ def ECG_time_data(ecg):
 
     #########################################################
     #cut a smaller window
-    wdw=fs*60*0.5
+    wdw=(fs*60*0.5)
     size_adpt=(int(wdw))
 
     #print(size_adpt, "size of the samples")
     t_tot = int((len(ecg)//size_adpt))      #int(wdw)
-    print("t_tot=" ,t_tot)
+    #print("t_tot=" ,t_tot)
     ecg_tot = np.zeros([size_adpt, t_tot])   
-    print("t_tot=",t_tot)
+    #print("t_tot=",t_tot)
     #ecg_base_tot = np.zeros([size_adpt, t_tot])
     #print(t_tot, 'ttot1')
 
