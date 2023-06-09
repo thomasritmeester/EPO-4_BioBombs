@@ -69,10 +69,11 @@ def ECG_time_data(ecg):
         ECG = ECGprep(fs, ecg_tot[:,i], "stress")
         #print(ECG)
         ecg_filt = ECG.filtering_data()
-    print("hallo")
-    print("ecg_filt=", ecg_filt.shape)
-    #######################################################
-    #Feature extraction, obtaining the peaks and getting the HRV time domain data.
+    #print("hallo")
+    #print("ecg_filt=", ecg_filt.shape)
+
+#######################################################
+#Feature extraction, obtaining the peaks and getting the HRV time domain data.
     for i in range (t_tot):   
 
         #ECG_feat_base = nk.ecg_clean( ecg_filt_b, sampling_rate=fs)

@@ -24,8 +24,10 @@ print("Start!")
 
 data_set_path = "D:/Downloads/WESAD/WESAD/"
 subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
+#Marking gender, male =1, female =-1. Female subjects: S8, S11, S17
+gender = [   1,   1,    1,    1,    1,    1,   -1,    1,    1,     -1,    1,      1,    1,      1,    -1] 
 
-sub_shuf = shuffle(sensor_data)
+sub_shuf = shuffle(subject)
 print(sub_shuf)
 train=sub_shuf[:14]
 test=[sub_shuf[-1]]  
@@ -78,7 +80,7 @@ def extraction (train_test):
 
         ecg_features_time_base = ECG_time_data(ecg_data_base)
         ecg_features_time_stress = ECG_time_data(ecg_data_stress)
-        print(type(ecg_features_time_base))
+        #print(type(ecg_features_time_base))
 
         eda_features_base = calc_eda_features(eda_data_base)
         eda_features_stress = calc_eda_features(eda_data_stress)
