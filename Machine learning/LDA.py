@@ -25,7 +25,7 @@ print("Start!")
 data_set_path = "D:/Downloads/WESAD/WESAD/"
 subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
 #Marking gender, male =1, female =-1. Female subjects: S8, S11, S17
-gender = [   1,   1,    1,    1,    1,    1,   -1,    1,    1,     -1,    1,      1,    1,      1,    -1] 
+#gender = [   2,   2,    2,    2,    -2,    2,   -2,    2,    2,     -2,    2,      2,    2,      2,    -2] 
 
 sub_shuf = shuffle(subject)
 print(sub_shuf)
@@ -96,6 +96,8 @@ def extraction (train_test):
 
         acc_features_stress = acc_features(acc_wrist_stress)
         acc_features_base = acc_features(acc_wrist_baseline)
+
+
 
         base_dict['EDA'] = eda_features_base
         base_dict['EMG'] = emg_features_base
