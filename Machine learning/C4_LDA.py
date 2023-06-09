@@ -24,9 +24,9 @@ print("Start!")
 
 base_dict = {}
 stress_dict = {}
-base_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Good data\P6 baseline.csv")
-base_data=base_data.dropna(1)
-stress_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Good data\P6 stress.csv")
+base_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Best Data\P1 baseline.csv")
+# base_data=base_data.dropna(1)
+stress_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Best Data\P1 stress.csv")
 
 #features_base = np.asarray(np.zeros(77), dtype = "float")
 #features_stress = np.asarray(np.zeros(77), dtype = "float")
@@ -151,10 +151,11 @@ def saving(feat, stress_state):
     return 
 
 print("stress_df",stress_df, stress_df.shape)
+print(features_base.shape, features_stress.shape)
 # saving(feat_test, stress_test)
 # saving(feat_train, stress_train)
 
-X_train, X_test, y_train, y_test = train_test_split(features_in, stress_df, test_size=0.33, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(features_in, stress_df, test_size=0.33, random_state=42, shuffle=True)
 #feat_train
 # X_test =feat_test
 # y_test =stress_test
@@ -183,7 +184,7 @@ from sklearn.linear_model import LogisticRegression
 
 
 # prepare the cross-validation procedure
-cv = KFold(n_splits=5, shuffle=False)
+cv = KFold(n_splits=5, shuffle=True)
 
 # evaluate model
 scores = cross_val_score(lda, X_train, y_train, scoring='accuracy', cv=cv, n_jobs=-1)
