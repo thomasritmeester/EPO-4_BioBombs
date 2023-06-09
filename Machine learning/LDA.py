@@ -40,6 +40,10 @@ def extraction (train_test):
     features_stress = pd.DataFrame()
     features_in_df = pd.DataFrame()
 
+<<<<<<< Updated upstream
+=======
+for i in range(1): #len(subject)
+>>>>>>> Stashed changes
 
     for i in range(len(train_test)): 
         print("Subject: ", train_test[i])
@@ -177,7 +181,11 @@ test_lda=lda.predict(X_test)
 # print(y_test.shape)
 
 score= lda.score(X_test,y_test)
+<<<<<<< Updated upstream
 print("Score no CV=", score, "\n")
+=======
+print(score)
+>>>>>>> Stashed changes
 
 # K Cross fold validation
 

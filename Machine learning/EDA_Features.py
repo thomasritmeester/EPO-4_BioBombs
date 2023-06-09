@@ -140,7 +140,7 @@ def calc_eda_features(eda_data):
     #print(eda2.shape)
     #print(eda_stress_tot.shape)
 
-    eda_comp=np.zeros((3,len(eda_data_tot[:,0]),t_tot))
+    eda_comp=np.zeros((3,len(eda_data_tot[:]),t_tot))
     EDA = []
     for j in range (t_tot): 
         EDA = EDAprep(fs, eda_data_tot[:,j],"baseline")

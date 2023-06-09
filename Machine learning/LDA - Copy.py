@@ -28,7 +28,7 @@ sub_shuf = shuffle(sensor_data)
 print(sub_shuf)
 train=sub_shuf[:14]
 test=[sub_shuf[-1]]
-
+print("Test subject=", test)
 
 #######################################################################
 #Reading out subjects and calling the feature extraction functions
@@ -38,7 +38,7 @@ def extraction (train_test):
     features_stress = np.asarray(np.zeros(54), dtype = "float")
     
     for i in range(len(train_test)):     
-        print("Test subject: ", train_test[i])
+        print("Subject: ", train_test[i])
 
         obj_data = {}
 
@@ -64,6 +64,8 @@ def extraction (train_test):
         ecg_data_stress=chest_data_dict['ECG'][stress,0]
         ecg_data_base=chest_data_dict['ECG'][baseline,0]    
 
+        baseline_signals = [eda_data_base, emg_data_base, ecg_data_base]
+        stress_signals = [eda_data_stress, emg_data_stress, ecg_data_stress]
         eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
         
         eda_features_base = calc_eda_features(eda_data_base)
@@ -88,8 +90,13 @@ def extraction (train_test):
 
         #print(eda_features_stress.shape, temp_features_stress.shape,ecg_features_time_stress.shape, ecg_features_freq_stress.shape)
 
+<<<<<<< Updated upstream
         features_stress = np.vstack((features_stress, np.hstack((eda_features_stress, temp_features_stress, ecg_features_time_stress, ecg_features_freq_stress, emg_features_stress))))
         features_base = np.vstack((features_base, np.hstack((eda_features_base, temp_features_base, ecg_features_time_base, ecg_features_freq_base, emg_features_base))))
+=======
+        features_stress = np.vstack((features_stress, np.hstack((eda_features_stress, temp_features_stress, ecg_features_time_stress, ecg_features_freq_stress, emg_features_stress, acc_features_stress))  ))
+        features_base = np.vstack((features_base, np.hstack((eda_features_base, temp_features_base, ecg_features_time_base, ecg_features_freq_base, emg_features_base, acc_features_base)) ))
+>>>>>>> Stashed changes
 
     features_base = features_base[1:,:]
     features_stress = features_stress[1:,:]
