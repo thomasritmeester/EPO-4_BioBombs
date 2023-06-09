@@ -25,7 +25,8 @@ print("Start!")
 base_dict = {}
 stress_dict = {}
 base_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Good data\P6 baseline.csv")
-stress_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Good data\P6 stress part 1.csv")
+base_data=base_data.dropna(1)
+stress_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Good data\P6 stress.csv")
 
 #features_base = np.asarray(np.zeros(77), dtype = "float")
 #features_stress = np.asarray(np.zeros(77), dtype = "float")
@@ -103,10 +104,8 @@ stress_dict['ECG'] = pd.concat([ecg_features_time_stress, ecg_features_freq_stre
 features_stress = pd.concat([features_stress, pd.concat(stress_dict, axis = 1)], ignore_index = True)
 features_base = pd.concat([features_base, pd.concat(base_dict, axis = 1)], ignore_index = True)
 
-
 features_in_df = pd.concat([features_base, features_stress], ignore_index = True)
 features_in = features_in_df.to_numpy()
-
 
 stress_state = np.append(np.zeros(features_base.shape[0]) , np.ones(features_stress.shape[0]))
 
@@ -151,6 +150,7 @@ def saving(feat, stress_state):
 
     return 
 
+print("stress_df",stress_df, stress_df.shape)
 # saving(feat_test, stress_test)
 # saving(feat_train, stress_train)
 
