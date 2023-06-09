@@ -40,11 +40,6 @@ def extraction (train_test):
     features_stress = pd.DataFrame()
     features_in_df = pd.DataFrame()
 
-<<<<<<< Updated upstream
-=======
-for i in range(1): #len(subject)
->>>>>>> Stashed changes
-
     for i in range(len(train_test)): 
         print("Subject: ", train_test[i])
 
@@ -55,7 +50,7 @@ for i in range(1): #len(subject)
         obj_data[train_test[i]] = read_data_of_one_subject(data_set_path, train_test[i])
         #print(obj_data[subject[i]].data)
         chest_data_dict = obj_data[train_test[i]].get_chest_data()
-        print(type(chest_data_dict))
+    
         labels = obj_data[train_test[i]].get_labels() 
         baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
         stress = np.asarray([idx for idx,val in enumerate(labels) if val == 2])
@@ -81,6 +76,10 @@ for i in range(1): #len(subject)
 
         eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
 
+        ecg_features_time_base = ECG_time_data(ecg_data_base)
+        ecg_features_time_stress = ECG_time_data(ecg_data_stress)
+        print(type(ecg_features_time_base))
+
         eda_features_base = calc_eda_features(eda_data_base)
         eda_features_stress = calc_eda_features(eda_data_stress)
         
@@ -89,10 +88,6 @@ for i in range(1): #len(subject)
 
         temp_features_base = calc_temp_features(temp_data_base)
         temp_features_stress = calc_temp_features(temp_data_stress)
-
-        ecg_features_time_base = ECG_time_data(ecg_data_base)
-        ecg_features_time_stress = ECG_time_data(ecg_data_stress)
-        print(type(ecg_features_time_base))
         
         ecg_features_freq_base = ECG_freq_data(ecg_data_base)
         ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
@@ -181,11 +176,7 @@ test_lda=lda.predict(X_test)
 # print(y_test.shape)
 
 score= lda.score(X_test,y_test)
-<<<<<<< Updated upstream
 print("Score no CV=", score, "\n")
-=======
-print(score)
->>>>>>> Stashed changes
 
 # K Cross fold validation
 

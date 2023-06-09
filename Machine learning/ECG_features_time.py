@@ -31,12 +31,14 @@ def ECG_time_data(ecg):
 
     #########################################################
     #cut a smaller window
-    wdw=int(0.5*60*fs)
+    wdw=fs*60*0.5
     size_adpt=(int(wdw))
 
     #print(size_adpt, "size of the samples")
-    t_tot = (len(ecg)//(int(wdw)))
-    ecg_tot = np.zeros([size_adpt, t_tot])
+    t_tot = int((len(ecg)//size_adpt))      #int(wdw)
+    print("t_tot=" ,t_tot)
+    ecg_tot = np.zeros([size_adpt, t_tot])   
+    print("t_tot=",t_tot)
     #ecg_base_tot = np.zeros([size_adpt, t_tot])
     #print(t_tot, 'ttot1')
 
@@ -62,11 +64,13 @@ def ECG_time_data(ecg):
 
 #############################################################
 #Filtering the ECG data
+    
     for i in range(t_tot):
         ECG = ECGprep(fs, ecg_tot[:,i], "stress")
-
+        #print(ECG)
         ecg_filt = ECG.filtering_data()
-
+    print("hallo")
+    print("ecg_filt=", ecg_filt.shape)
     #######################################################
     #Feature extraction, obtaining the peaks and getting the HRV time domain data.
     for i in range (t_tot):   
