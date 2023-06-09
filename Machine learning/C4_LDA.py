@@ -38,8 +38,6 @@ sensor_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\S
 # stress_dict = {}
 # obj_data = {}
 
-#obj_data[sensor_data[i]] = read_data_of_one_subject(data_set_path, sensor_data[i])
-
 ecg_data_base=sensor_data['ECG']
 ecg_data_base=ecg_data_base.to_numpy()
 #print(type(ecg_data_base))
@@ -50,46 +48,46 @@ ecg_features_freq_base = ECG_freq_data(ecg_data_base)
 
 print("ecg feat_time=", ecg_features_time_base.shape)
 #print(obj_data[subject[i]].data)
-# sensor_data = obj_data[sensor_data[i]].get_chest_data()
+#sensor_data = obj_data[sensor_data[i]].get_chest_data()
 
 # labels = obj_data[sensor_data[i]].get_labels() 
 # baseline = np.asarray([idx for idx,val in enumerate(labels) if val == 1])
 # stress = np.asarray([idx for idx,val in enumerate(labels) if val == 2])
 
-#acc_chest_stress=sensor_data['ACC'][stress]
+#acc_chest_stress=sensor_data['ACC'] 
 
-#eda_data_stress=sensor_data['EDA'][stress,0]
-# eda_data_base=sensor_data['EDA']
+eda_data_stress=sensor_data['EDA']
+eda_data_base=sensor_data['EDA']
 
-# #emg_data_stress=sensor_data['EMG'][stress,0]
-# emg_data_base=sensor_data['EMG']
+#emg_data_stress=sensor_data['EMG']
+emg_data_base=sensor_data['EMG']
 
-# #temp_data_stress=sensor_data['Temp'][stress,0]
-# temp_data_base=sensor_data['Temp']
+#temp_data_stress=sensor_data['Temp']
+temp_data_base=sensor_data['Temp']
 
-#ecg_data_stress=sensor_data['ECG'][stress,0]
+ecg_data_stress=sensor_data['ECG']
 
 
 #Signals to be processed by ACC
 # baseline_signals = [eda_data_base, emg_data_base, ecg_data_base]
 # stress_signals = [eda_data_stress, emg_data_stress, ecg_data_stress]
 
-# eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(sensor_data, i, stress, baseline, baseline_signals, stress_signals)
+eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(sensor_data, i, stress, baseline, baseline_signals, stress_signals)
 
-# eda_features_base = calc_eda_features(eda_data_base)
-# #eda_features_stress = calc_eda_features(eda_data_stress)
+eda_features_base = calc_eda_features(eda_data_base)
+eda_features_stress = calc_eda_features(eda_data_stress)
 
-# emg_features_base = calc_emg_features(emg_data_base)
-# #emg_features_stress = calc_emg_features(emg_data_stress)
+emg_features_base = calc_emg_features(emg_data_base)
+emg_features_stress = calc_emg_features(emg_data_stress)
 
-# temp_features_base = calc_temp_features(temp_data_base)
-# #temp_features_stress = calc_temp_features(temp_data_stress)
+temp_features_base = calc_temp_features(temp_data_base)
+temp_features_stress = calc_temp_features(temp_data_stress)
 
-#ecg_features_time_stress = ECG_time_data(ecg_data_stress)
-#ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
+ecg_features_time_stress = ECG_time_data(ecg_data_stress)
+ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
 
-# #acc_features_stress = acc_features(acc_wrist_stress)
-# acc_features_base = acc_features(acc_wrist_baseline)
+#acc_features_stress = acc_features(acc_wrist_stress)
+#acc_features_base = acc_features(acc_wrist_baseline)
 
 # base_dict['EDA'] = eda_features_base
 # base_dict['EMG'] = emg_features_base
