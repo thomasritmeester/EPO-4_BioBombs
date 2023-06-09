@@ -60,7 +60,8 @@ def extraction (train_test):
 
         ecg_data_stress=chest_data_dict['ECG'][stress,0]
         ecg_data_base=chest_data_dict['ECG'][baseline,0]
-        
+        print(len(ecg_data_stress))
+
         acc_chest_stress=chest_data_dict['ACC'][stress]
 
         eda_data_stress=chest_data_dict['EDA'][stress,0]
@@ -80,6 +81,7 @@ def extraction (train_test):
 
         ecg_features_time_base = ECG_time_data(ecg_data_base)
         ecg_features_time_stress = ECG_time_data(ecg_data_stress)
+        print(ecg_features_time_stress.shape)
         #print(type(ecg_features_time_base))
 
         eda_features_base = calc_eda_features(eda_data_base)
