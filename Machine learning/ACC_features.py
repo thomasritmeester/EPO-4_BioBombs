@@ -19,8 +19,8 @@ from scipy import interpolate
 from wesad import read_data_of_one_subject
 from itertools import compress
 
-data_set_path = "D:/Downloads/WESAD/WESAD/"
-base_data = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
+data_set_path = "WESAD/"
+subject = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
 
 #wrist sampling frequencies
 fs_dict = {'ACC': 32, 'label': 700}
@@ -31,12 +31,12 @@ def remove_movement(chest_data_dict, subject_id, stress, baseline, baseline_sign
     obj_data = {}
     fs = 700
 
-    obj_data[base_data[subject_id]] = read_data_of_one_subject(data_set_path, base_data[subject_id])
+    obj_data[subject[subject_id]] = read_data_of_one_subject(data_set_path, subject[subject_id])
 
     #print(obj_data[subject[i]].data)
-    wrist_data_dict = obj_data[base_data[subject_id]].get_wrist_data()
+    wrist_data_dict = obj_data[subject[subject_id]].get_wrist_data()
 
-    labels = obj_data[base_data[subject_id]].labels
+    labels = obj_data[subject[subject_id]].labels
 
     #Chest ACC data
     acc_chest_stress=chest_data_dict['ACC'][stress]
@@ -140,22 +140,22 @@ def remove_movement(chest_data_dict, subject_id, stress, baseline, baseline_sign
 
     
 
-def acc_features(acc_wrist):
+def acc_features(acc_chest):
     fs = 700
-    window = int(0.5*60*fs)
+    window = int(1*60*fs)
 
     #acc_features = np.zeros(15)
 
     acc_features = pd.DataFrame()
 
     
-    acc = acc_wrist[:,0]
+    acc = acc_chest[:,0]
     t_tot = (len(acc)//(int(window)))
 
     merged_array = np.zeros((t_tot, window))
-    for j in range(np.shape(acc_wrist)[1]):
+    for j in range(np.shape(acc_chest)[1]):
         
-        acc = acc_wrist[:,j]
+        acc = acc_chest[:,j]
         t_tot = (len(acc)//(int(window)))
         two_d_array = np.zeros((window))
 
@@ -171,25 +171,25 @@ def acc_features(acc_wrist):
 
     for n in range(t_tot):
         temp_array = np.asarray(np.asarray([], dtype = "float"))
-        for m in range(np.shape(acc_wrist)[1]):
+        for m in range(np.shape(acc_chest)[1]):
             #loops through x, y and z                    
             temp_array = np.append(temp_array,np.mean(merged_array[m][n,:]))
-            temp_array = np.append(temp_array,np.std(merged_array[m,:,n]))
-            temp_array = np.append(temp_array,np.sum(np.abs(merged_array[m,:,n])))
+            temp_array = np.append(temp_array,np.std(merged_array[m][n,:]))
+            temp_array = np.append(temp_array,np.sum(np.abs(merged_array[m][n,:])))
 
-            acc_norm = (merged_array[m,:,n] - np.mean(merged_array[m,:,n]))
+            acc_norm = (merged_array[m][n,:] - np.mean(merged_array[m][n,:]))
             Y = np.abs(fft(acc_norm))
             F = np.arange(0,fs,fs/np.size(Y))
             F = F[:len(Y)]
             temp_array = np.append(temp_array,F[np.argmax(Y)])
 
         #mean  of the std, sum and abs of all three axes
-        temp_array = np.append(temp_array, np.mean(temp_array[0:3]))
-        temp_array = np.append(temp_array, np.mean(temp_array[3:6]))
-        temp_array = np.append(temp_array, np.mean(temp_array[6:9]))
+        temp_array = np.append(temp_array, np.mean([temp_array[0], temp_array[4], temp_array[8]]))
+        temp_array = np.append(temp_array, np.mean([temp_array[1], temp_array[5], temp_array[9]]))
+        temp_array = np.append(temp_array, np.mean([temp_array[2], temp_array[6], temp_array[10]]))
 
 
-        temp_pd = pd.DataFrame([temp_array], columns = ['mean_x', 'mean_y', 'mean_z', 'std_x', 'std_y', 'std_z', 'integral_x', 'integral_y', 'integral_z', 'Max freq_x','Max freq_y', 'Max freq_z' , 'mean_3D', 'std 3D', 'integral 3D'])
+        temp_pd = pd.DataFrame([temp_array], columns = ['mean_x', 'std_x', 'integral_x', 'Max freq_x','mean_y', 'std_y', 'integral_y', 'Max freq_y', 'mean_z','std_z', 'integral_z','Max freq_z' , 'mean_3D', 'std 3D', 'integral 3D'])
         
         acc_features = pd.concat([acc_features, temp_pd], ignore_index=True)
         
