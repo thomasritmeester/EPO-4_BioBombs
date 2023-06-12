@@ -77,8 +77,6 @@ def extraction (train_test):
         baseline_signals = [eda_data_base, emg_data_base, ecg_data_base]
         stress_signals = [eda_data_stress, emg_data_stress, ecg_data_stress]
 
-        eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(chest_data_dict, i, stress, baseline, baseline_signals, stress_signals)
-
         ecg_features_time_base = ECG_time_data(ecg_data_base)
         ecg_features_time_stress = ECG_time_data(ecg_data_stress)
         print(ecg_features_time_stress.shape)
