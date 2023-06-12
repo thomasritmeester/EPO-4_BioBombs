@@ -24,9 +24,9 @@ print("Start!")
 
 base_dict = {}
 stress_dict = {}
-base_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Best Data\P1 baseline.csv")
+base_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Best Data\P9 baseline.csv")
 # base_data=base_data.dropna(1)
-stress_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Best Data\P1 stress.csv")
+stress_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Best Data\P9 stress.csv")
 
 #features_base = np.asarray(np.zeros(77), dtype = "float")
 #features_stress = np.asarray(np.zeros(77), dtype = "float")
@@ -164,13 +164,13 @@ X_train, X_test, y_train, y_test = train_test_split(features_in, stress_df, test
 
 lda=LDA(n_components=1)
 train_lda=lda.fit(X_train, y_train)
-test_lda=lda.predict(X_test)
-
+test_lda=lda.predict(X_test) 
 # print(test_lda.shape)
 # print(y_test.shape)
 
 score= lda.score(X_test,y_test)
 print("Score no CV=", score, "\n")
+
 
 # K Cross fold validation
 

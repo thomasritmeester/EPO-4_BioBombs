@@ -26,13 +26,13 @@ class ECGprep:
         # cut a smaller window      
         if title=="":
             title=self.title
-#         plt.figure(figsize=(12,4))
-#         plt.plot(t,ecg)
-#         plt.title("input ECG "+ title)
-#         plt.xlabel('$Time (s)$') 
-#         plt.xlim(0,max(t))
-#         plt.ylabel('$ECG$')
-#         plt.show()  
+        plt.figure(figsize=(12,4))
+        plt.plot(t,ecg)
+        plt.title("input ECG "+ title)
+        plt.xlabel('$Time (s)$') 
+        plt.xlim(0,max(t))
+        plt.ylabel('$ECG$')
+        plt.show()  
         
     def filtering_data(self,ecg_class=1,title=""):
         nyq = 0.5*self.Fs
