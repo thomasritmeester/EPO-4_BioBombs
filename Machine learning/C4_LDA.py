@@ -25,7 +25,7 @@ print("Start!")
 base_dict = {}
 stress_dict = {}
 
-subjects=["P1","P2","P5","P9","P10","P11","P12"]        #,"P6", P3 later to be added
+subjects=["P1","P2","P5","P6","P9","P10","P11","P12"]        #,"P6", P3 later to be added
 sub_shuf = shuffle(subjects)
 print(sub_shuf)
 train=sub_shuf[:len(subjects)-1]
