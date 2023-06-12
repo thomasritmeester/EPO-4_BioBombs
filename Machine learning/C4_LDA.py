@@ -26,7 +26,7 @@ base_dict = {}
 stress_dict = {}
 base_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Best Data\P9 baseline.csv")
 # base_data=base_data.dropna(1)
-stress_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Best Data\P9 stress.csv")
+stress_data = pd.read_csv("D:\Documents\GitHub\EPO-4_BioBombs\Machine learning\Sensordata files\C4 raw data\Best Data\P9 baseline.csv")
 
 #features_base = np.asarray(np.zeros(77), dtype = "float")
 #features_stress = np.asarray(np.zeros(77), dtype = "float")
