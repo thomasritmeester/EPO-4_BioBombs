@@ -122,7 +122,8 @@ def extraction (train_test):
         stress_df = pd.concat(stress_out, axis = 1)
         patient_df = pd.concat([patient_df, pd.concat([patient_base_df, patient_stress_df], ignore_index = True),stress_df], axis = 1)
 
-        subject_list = np.asarray([subject[i]]*len(patient_df.index))
+        subject_list = np.asarray([subjects[i]]*len(patient_df.index))
+        print(i, subjects[i])
         subject_name = {}
         subject_df = pd.DataFrame(subject_list, columns = ['Subject'])
         subject_name['Subject'] = subject_df
@@ -162,7 +163,7 @@ def extraction (train_test):
 # feat_test, stress_test,_ = extraction(test)
 
 all_data_df=extraction(subjects)
-print(all_data_df)
+print
 ################################################################################
 #Saving all_data_df
 import pandas as pd
