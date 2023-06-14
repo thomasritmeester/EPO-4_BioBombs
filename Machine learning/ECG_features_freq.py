@@ -20,7 +20,7 @@ import neurokit2 as nk
 
 ##################################
 #Creating a function:
-def ECG_freq_data(ecg):
+def ECG_freq_data(ecg, frame):
     from ECG import ECGprep
 
     ecg_features = np.asarray(np.zeros(7), dtype = "float")
@@ -32,11 +32,11 @@ def ECG_freq_data(ecg):
 
     #########################################################
     #cut a smaller window
-    wdw=int(1*30*fs)
-    size_adpt=int(len(ecg)/(len(ecg)/(int(wdw))))
+    wdw=int(frame*fs)
+    size_adpt=(int(wdw))
 
     #print(size_adpt, "size of the samples")
-    t_tot = (len(ecg)//(int(wdw)))
+    t_tot = int((len(ecg)//(int(wdw))))
     ecg_tot = np.zeros([size_adpt, t_tot])
     #ecg_base_tot = np.zeros([size_adpt, t_tot])
     #print(t_tot, 'ttot1')
