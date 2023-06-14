@@ -4,7 +4,7 @@ import pandas as pd
 from electromyography import *
 
 
-def calc_emg_features(emg):
+def calc_emg_features(emg, frame):
     from EMG import EMGprep
     
     fs = 700 
@@ -14,10 +14,10 @@ def calc_emg_features(emg):
 
     all_emg_features = pd.DataFrame()
     
-    window = int(0.5*60*fs)
+    window = int(frame*fs)
     
     
-    t_tot = (len(emg)//(int(window)))
+    t_tot = int(len(emg)//(int(window)))
     emg_tot = np.zeros([window, t_tot])
     emg_filt = np.zeros([window, t_tot])
     
