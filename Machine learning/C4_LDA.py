@@ -10,7 +10,7 @@ from Temperature_Features import *
 from ECG_features_time import * 
 from ECG_features_freq import *
 from EMG_Features import *
-from ACC_features import *
+from Remove_Movement import *
 from CrossFold import *
 from wesad import read_data_of_one_subject
 import warnings
@@ -65,7 +65,7 @@ def extraction (train_test):
         ecg_features_time_base = ECG_time_data(ecg_data_base)
         ecg_features_freq_base = ECG_freq_data(ecg_data_base)
 
-        #acc_chest_stress=sensor_data['ACC'] 
+        acc_chest_stress=stress_data['ACC'] 
 
         eda_data_stress=stress_data['EDA']
         eda_data_base=base_data['EDA']
@@ -80,7 +80,7 @@ def extraction (train_test):
         #Signals to be processed by ACC
         baseline_signals = [eda_data_base, emg_data_base, ecg_data_base]
         stress_signals = [eda_data_stress, emg_data_stress, ecg_data_stress]
-        #eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(sensor_data, i, stress, baseline, baseline_signals, stress_signals)
+        eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(sensor_data, i, stress, baseline, baseline_signals, stress_signals)
 
         eda_features_base = calc_eda_features(eda_data_base)
         eda_features_stress = calc_eda_features(eda_data_stress)
@@ -94,21 +94,18 @@ def extraction (train_test):
         ecg_features_time_stress = ECG_time_data(ecg_data_stress)
         ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
 
-        #acc_features_stress = acc_features(acc_wrist_stress)
-        #acc_features_base = acc_features(acc_wrist_baseline)
-
         base_dict['EDA'] = eda_features_base
         base_dict['EMG'] = emg_features_base
         base_dict['TEMP'] = temp_features_base
         base_dict['ECG'] = pd.concat([ecg_features_time_base, ecg_features_freq_base], axis = 1)
 
-        # base_dict['ACC'] = acc_features_base
+        base_dict['ACC'] = acc_features_base
 
         stress_dict['EDA'] = eda_features_stress
         stress_dict['EMG'] = emg_features_stress
         stress_dict['TEMP'] = temp_features_stress
         stress_dict['ECG'] = pd.concat([ecg_features_time_stress, ecg_features_freq_stress], axis = 1)
-        #stress_dict['ACC'] = acc_features_stress
+        stress_dict['ACC'] = acc_features_stress
 
         
         patient_stress_df = pd.concat(stress_dict, axis = 1)
@@ -122,8 +119,7 @@ def extraction (train_test):
         stress_df = pd.concat(stress_out, axis = 1)
         patient_df = pd.concat([patient_df, pd.concat([patient_base_df, patient_stress_df], ignore_index = True),stress_df], axis = 1)
 
-        subject_list = np.asarray([subjects[i]]*len(patient_df.index))
-        print(i, subjects[i])
+        subject_list = np.asarray([subject[i]]*len(patient_df.index))
         subject_name = {}
         subject_df = pd.DataFrame(subject_list, columns = ['Subject'])
         subject_name['Subject'] = subject_df
@@ -139,6 +135,9 @@ def extraction (train_test):
         patient_df = pd.concat([subject_name_df, gender_df, patient_df], axis = 1)
 
         all_data_df = pd.concat([all_data_df, patient_df], ignore_index = True)
+
+
+        #Use if not all data is used:
 
         # features_stress = pd.concat([features_stress, pd.concat(stress_dict, axis = 1)], ignore_index = True)
         # features_base = pd.concat([features_base, pd.concat(base_dict, axis = 1)], ignore_index = True)
@@ -163,20 +162,16 @@ def extraction (train_test):
 # feat_test, stress_test,_ = extraction(test)
 
 all_data_df=extraction(subjects)
-print
-################################################################################
-#Saving all_data_df
+
+lda=LDA(n_components=1)
+accuracy_score, f1_score, mcc_score=CrossFold(subjects, lda, all_data_df, data = 'False')
+print("accuracy_score=", accuracy_score, '\n')
+print("f1_score=", accuracy_score, '\n')
+print("mcc_score", accuracy_score, '\n')
+
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
-
-def saving(all_data):
-    store_all = pd.DataFrame(all_data)
-    all_data_df = pa.Table.from_pandas(store_all, preserve_index=False)
-    pq.write_table(all_data_df, 'all_data_df.parquet')
-
-    return 
-saving(all_data_df)
 
 # print('\n',"feat_train shape=", feat_train.size, '\n',"stress_train shape", stress_train.size)
 # print('\n',"feat_test shape=", feat_test.size, '\n',"stress_test shape", stress_test.size)
