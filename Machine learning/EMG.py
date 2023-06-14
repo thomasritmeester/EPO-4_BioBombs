@@ -1,221 +1,73 @@
-# import os
-# from os import listdir
-# from os.path import isfile, join, isdir
-import pickle
 import numpy as np
-from scipy.fft import fft
+import matplotlib
 import pandas as pd
-from scipy.signal import butter, iirnotch, lfilter, sosfilt
-from scipy import signal as sig
-# import numpy as np
-import matplotlib.pyplot as plt
-import sys
-import scipy.ndimage
+from electromyography import *
 
 
-EMG = {}
-class EMGprep:
-    def __init__ (self,Fs,emg_class=[],title=""): 
-        self.title = title
-        self.Fs=Fs
-        self.emg = emg_class
-        self.t=np.arange(0,self.emg.size*(1/self.Fs),(1/self.Fs))
-        self.t=self.t[:self.emg.size]
-    def plotdata(self,emg_class=[],title=""):
-        if len(emg_class) == 0:
-            emg=self.emg
-            t=self.t
-        else:
-            emg = emg_class[:]
-            t=np.arange(0,self.emg.size*(1/self.Fs),(1/self.Fs))
-            t=t[:self.emg.size]
-        # cut a smaller window      
-        if title=="":
-            title=self.title
-        plt.figure()
-        plt.plot(t,emg)
-        plt.title("input EMG "+ title)
-        plt.xlim(0,max(t))
-        plt.xlabel('$Time (s)$') 
-        plt.ylabel('$EMG$')
-        plt.show()  
-        
-        
-        X = fft(emg)
-        
-        freqs = np.arange(0, self.Fs, self.Fs/len(X))
-        plt.figure()
-        plt.plot(freqs,20*np.log10(abs(X)))
-        plt.title("Input in frequency domain ("+title+")")
-        plt.xlabel("Frequency [Hz]")
-        plt.xlim(0-self.Fs/len(X),self.Fs/2)
-        plt.ylabel("$EMG$")
-        plt.margins(0,0.1)
-        plt.grid(which="both", axis="both")
-        plt.show()
-        
-        
-    def filtering_data(self,emg_class=[],title=""):
-        nyq = 0.5*self.Fs
-        order=4
-          
-        if len(emg_class) == 0:
-            emg=self.emg
-            t=self.t
-        else:
-            emg = emg_class[10000:10000+ 10*self.Fs]
-            t=np.arange(0,self.emg.size*(1/self.Fs),(1/self.Fs))
-            t=t[:self.emg.size]
-            
-        if title=="":
-            title=self.title
-
-        # highpass filter
-        high = 50/nyq
-        sos = butter(order, high, btype ="highpass", output='sos') #sos more stable the b,a
-        emg_h = sosfilt(sos, self.emg)
-#         fig, ax = plt.subplots(2, 2, figsize=(15,8))
-        
-#         ax[0,0].plot(t,emg,label="raw EMG")
-#         ax[0,0].plot(t,emg_h, label="highpass filtered EMG")
-#         ax[0,0].set_title("EMG highpass filtered ("+ title+")")
-#         ax[0,0].set_xlim(0,max(t))
-#         ax[0,0].set_xlabel('$Time (s)$') 
-#         ax[0,0].set_ylabel('$EMG$') 
-#         ax[0,0].legend()
-        # ax[0,0].show()
-        
-       
-        w,h=sig.sosfreqz(sos)
-#         ax[0,1].plot(w/2/np.pi*self.Fs,abs(h))
-#         ax[0,1].set_title("Butterworth highpass filter")
-#         ax[0,1].set_xlabel("Frequency [Hz]")
-#         ax[0,1].set_ylabel("$EMG$")
-#         ax[0,1].margins(0,0.1)
-#         ax[0,1].grid(which="both", axis="both")
-#         ax[0,1].axvline(high*nyq, color="green")
-        # plt.show() 
-        
-        X = fft(emg_h)
-        
-#         freqs = np.arange(0, self.Fs, self.Fs/len(X))
-        
-#         ax[1,1].plot(freqs,abs(X))
-#         ax[1,1].set_xlim(0-self.Fs/len(X),self.Fs/2)
-#         ax[1,1].set_title("EMG signal highpass filtered in frequency domain ("+title+")")
-#         ax[1,1].set_xlabel("Frequency [Hz]")
-#         ax[1,1].set_ylabel("$EMG$")
-#         ax[1,1].grid(which="both", axis="both")
-        # plt.show()
-
-        # notch filter remove powerline interference
-        notchs=[0,1,2,3,4,5,6,7]*50
-        for notch in notchs:
-            notch = notchs[notch]/nyq
-            b, a = iirnotch(notch,30,fs=self.Fs)
-            emg_h = lfilter(b,a,emg_h)
-        emg_hn = emg_h
-        
-        X = fft(emg_hn)
-        
-        freqs = np.arange(0, self.Fs, self.Fs/len(X))
-        
-#         ax[1,0].plot(freqs,abs(X))
-#         ax[1,0].set_xlim(0-self.Fs/len(X),self.Fs/2)
-#         ax[1,0].set_title("EMG signal highpass and Notch filtered in frequency domain ("+title+")")
-#         ax[1,0].set_xlabel("Frequency [Hz]")
-#         ax[1,0].set_ylabel("$EMG$")
-#         ax[1,0].grid(which="both", axis="both")
-#         plt.show()
-        
-#         plt.figure(figsize=(12,4))
-#         plt.plot(t,emg-np.mean(emg),label="raw EMG lowered by the mean of signal")
-#         plt.plot(t,emg_hn, label="highpasss & notch filtered EMG")
-#         plt.title("EMG highpass filter output ("+ title+")")
-#         plt.xlim(0,max(t))
-#         plt.xlabel('$Time (s)$') 
-#         plt.ylabel("V")
-#         plt.ylim(min(emg_hn)-5,max(emg_hn)+5)
-#         plt.legend()
-#         plt.show()   
-
-        # lowpass filter ##########################################
-        low = 10/nyq
-        sos = butter(order, low, btype ="lowpass", output='sos') #sos more stable the b,a
-        emg_l = sosfilt(sos, self.emg)
-        
-        fig, ax = plt.subplots(2, 2, figsize=(15,8))
-        
-#         ax[0,0].plot(t,emg,label="raw EMG")
-#         ax[0,0].plot(t,emg_l, label="lowpass filtered EMG ("+title+")")
-#         ax[0,0].set_title("EMG lowpass filtering ("+ title+")")
-#         ax[0,0].set_xlabel('$Time (s)$') 
-#         ax[0,0].set_xlim(0,max(t))
-#         ax[0,0].set_ylabel('$EMG$') 
-#         ax[0,0].legend()
-        # ax[0,0].show()
-        
-       
-        w,h=sig.sosfreqz(sos)
-#         ax[0,1].plot(w/2/np.pi*self.Fs,abs(h))
-#         ax[0,1].set_xlim(0,self.Fs/2)
-#         ax[0,1].set_title("Butterworth lowpass filter frequency domain ("+title+")")
-#         ax[0,1].set_xlabel("Frequency [rad/s]")
-#         ax[0,1].set_xlim(0,max(t))
-#         ax[0,1].set_ylabel("$EMG$")
-#         ax[0,1].margins(0,0.1)
-#         ax[0,1].grid(which="both", axis="both")
-#         ax[0,1].axvline(low*nyq, color="green")
-        # plt.show() 
-        
-        X = fft(emg_l)
-        
-        freqs = np.arange(0, self.Fs, self.Fs/len(X))
-        
-#         ax[1,1].plot(freqs,abs(X))
-#         ax[1,1].set_xlim(0-self.Fs/len(X),self.Fs/2)
-#         ax[1,1].set_title("EMG signal lowpass filtered in frequency domain ("+title+")")
-#         ax[1,1].set_xlabel("Frequency [Hz]")
-#         ax[1,1].set_ylabel("$EMG$")
-#         ax[1,1].grid(which="both", axis="both")
-        # plt.show()
-
-        # notch filter remove powerline interference
-        notchs=[0,1,2,3,4,5,6,7]*50
-        for notch in notchs:
-            notch = notchs[notch]/nyq
-            b, a = iirnotch(notch,30,fs=self.Fs)
-            emg_l = lfilter(b,a,emg_l)
-        emg_ln = emg_l
-        
-        X = fft(emg_ln)
-        
-        freqs = np.arange(0, self.Fs, self.Fs/len(X))
-        
-#         ax[1,0].plot(freqs,abs(X))
-#         ax[1,0].set_xlim(0-self.Fs/len(X),self.Fs/2)
-#         ax[1,0].set_title("EMG signal lowpass and Notch filtered in frequency domain ("+title+")")
-#         ax[1,0].set_xlabel("Frequency [Hz]")
-#         ax[1,0].grid(which="both", axis="both")
-#         ax[1,0].set_ylabel("$EMG$")
-#         plt.show()
-        
-#         plt.figure(figsize=(12,4))
-#         plt.plot(t,emg- np.mean(emg),label="raw EMG lowered by the mean of signal")
-#         plt.plot(t,emg_ln, label="lowpas & notch filtered EMG ("+title+")")
-#         plt.title("EMG lowpass filter output ("+ title+")")
-#         plt.xlabel('$Time (s)$')
-#         plt.xlim(0,max(t))
-#         plt.ylabel('$EMG$')
-#         plt.ylim(min(emg_ln)-5,max(emg_ln)+5)
-#         plt.legend()
-#         plt.show()        
-        
-        return emg_hn
+def calc_emg_features(emg, frame):
+    from EMG import EMGprep
     
-# EMG = EMGprep(fs,emg_base,"stress")
-   
-# EMG.plotdata()
-# EMG.filtering_data()
-# EMG.plotdata(emg_stress,"stress")
-# EMG.filtering_data(emg_stress,"stress")
+    fs = 700 
+
+
+    # all_emg_features = np.asarray(np.zeros(18), dtype = "float")
+
+    all_emg_features = pd.DataFrame()
+    
+    window = int(frame*fs)
+    
+    
+    t_tot = int(len(emg)//(int(window)))
+    emg_tot = np.zeros([window, t_tot])
+    emg_filt = np.zeros([window, t_tot])
+    
+    
+    
+    for i in range(t_tot):
+        emg_data = emg[i*int(window):(i+1)*int(window)]
+        t = np.arange(0, len(emg_data)*(1/fs), (1/fs))
+        t = t[:len(emg_data)]
+        emg_tot[:, i] = emg_data
+    
+    
+    for i in range(t_tot):
+        EMG = EMGprep(fs, emg_tot[:,i], "")
+        emg_filtered = EMG.filtering_data()
+        matplotlib.pyplot.close('all')
+        emg_filt[:, i] = emg_filtered
+        
+    for i in range(t_tot):
+        emg_features = analyzeEMG(emg_filt[:,i], fs, preprocessing=False, threshold=0.01)
+
+        del emg_features['TimeDomain']['HIST']
+        # del emg_features['TimeDomain']['MAV1']
+        # del emg_features['TimeDomain']['MAV2']
+        # del emg_features['TimeDomain']['TM3']
+        # del emg_features['TimeDomain']['TM4']
+        # del emg_features['TimeDomain']['TM5']
+        # del emg_features['TimeDomain']['AFB']
+        del emg_features['TimeDomain']['MAVSLPk']
+        # del emg_features['FrequencyDomain']['TTP']
+        # del emg_features['FrequencyDomain']['SM1']
+        # del emg_features['FrequencyDomain']['SM2']
+        # del emg_features['FrequencyDomain']['SM3']
+        # del emg_features['FrequencyDomain']['FR']
+        # del emg_features['FrequencyDomain']['VCF']
+
+        emg_pd_time_features = pd.DataFrame([emg_features['TimeDomain']])
+        emg_pd_freq_features = pd.DataFrame([emg_features['FrequencyDomain']])
+
+        # features = []
+
+        # for emg_id, emg_info in emg_features.items():    
+        #     for key in emg_info:
+        #         features = np.append(features, emg_info[key])
+                                
+        # all_emg_features = np.vstack((all_emg_features, features))
+        emg_pd_features = pd.concat([emg_pd_freq_features, emg_pd_time_features], axis = 1)
+
+
+        all_emg_features = pd.concat([all_emg_features, emg_pd_features], ignore_index=True)
+        
+        
+    return all_emg_features
