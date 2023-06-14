@@ -140,7 +140,7 @@ def remove_movement(chest_data_dict, subject_id, stress, baseline, baseline_sign
 
     
 
-def acc_features(acc_chest):
+def calc_acc_features(acc_chest):
     fs = 700
     window = int(1*60*fs)
 

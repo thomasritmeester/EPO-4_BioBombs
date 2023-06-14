@@ -80,7 +80,7 @@ def extraction (train_test):
         #Signals to be processed by ACC
         baseline_signals = [eda_data_base, emg_data_base, ecg_data_base]
         stress_signals = [eda_data_stress, emg_data_stress, ecg_data_stress]
-        eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(sensor_data, i, stress, baseline, baseline_signals, stress_signals)
+        #eda_data_base, emg_data_base, ecg_data_base, eda_data_stress, emg_data_stress, ecg_data_stress, acc_wrist_stress, acc_wrist_baseline = remove_movement(sensor_data, i, stress, baseline, baseline_signals, stress_signals)
 
         eda_features_base = calc_eda_features(eda_data_base)
         eda_features_stress = calc_eda_features(eda_data_stress)
@@ -93,6 +93,9 @@ def extraction (train_test):
 
         ecg_features_time_stress = ECG_time_data(ecg_data_stress)
         ecg_features_freq_stress = ECG_freq_data(ecg_data_stress)
+
+        acc_features_base=calc_acc_features
+        acc_features_stress=calc_acc_features
 
         base_dict['EDA'] = eda_features_base
         base_dict['EMG'] = emg_features_base
