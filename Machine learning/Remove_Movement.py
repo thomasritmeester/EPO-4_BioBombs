@@ -140,9 +140,9 @@ def remove_movement(chest_data_dict, subject_id, stress, baseline, baseline_sign
 
     
 
-def calc_acc_features(acc_chest):
+def calc_acc_features(acc_chest, frame):
     fs = 700
-    window = int(1*60*fs)
+    window = int(frame*fs)
 
     #acc_features = np.zeros(15)
 
@@ -150,13 +150,13 @@ def calc_acc_features(acc_chest):
 
     
     acc = acc_chest[:,0]
-    t_tot = (len(acc)//(int(window)))
+    t_tot = int(len(acc)//(int(window)))
 
     merged_array = np.zeros((t_tot, window))
     for j in range(np.shape(acc_chest)[1]):
         
         acc = acc_chest[:,j]
-        t_tot = (len(acc)//(int(window)))
+        t_tot = int(len(acc)//(int(window)))
         two_d_array = np.zeros((window))
 
         for i in range(t_tot):
