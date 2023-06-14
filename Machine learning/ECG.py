@@ -12,7 +12,7 @@ class ECGprep:
     def __init__ (self,Fs,ecg_class=[],title=""): 
         self.title = title
         self.Fs=Fs
-        self.ecg = ecg_class[10000:10000+ 10*self.Fs]
+        self.ecg = ecg_class #[10000:10000+ 10*self.Fs]
         self.t=np.arange(0,self.ecg.size*(1/self.Fs),(1/self.Fs))
         self.t=self.t[:self.ecg.size]
     def plotdata(self,ecg_class=1,title=""):
@@ -26,13 +26,13 @@ class ECGprep:
         # cut a smaller window      
         if title=="":
             title=self.title
-        plt.figure(figsize=(12,4))
-        plt.plot(t,ecg)
-        plt.title("input ECG "+ title)
-        plt.xlabel('$Time (s)$') 
-        plt.xlim(0,max(t))
-        plt.ylabel('$ECG$')
-        plt.show()  
+#         plt.figure(figsize=(12,4))
+#         plt.plot(t,ecg)
+#         plt.title("input ECG "+ title)
+#         plt.xlabel('$Time (s)$') 
+#         plt.xlim(0,max(t))
+#         plt.ylabel('$ECG$')
+#         plt.show()  
         
     def filtering_data(self,ecg_class=1,title=""):
         nyq = 0.5*self.Fs
@@ -42,7 +42,7 @@ class ECGprep:
             ecg=self.ecg
             t=self.t
         else:
-            ecg = ecg_class[10000:10000+ 10*self.Fs]
+            ecg = ecg_class #[10000:10000+ 10*self.Fs]
             t=np.arange(0,self.emg.size*(1/self.Fs),(1/self.Fs))
             t=t[:self.ecg.size]
 
