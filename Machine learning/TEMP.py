@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
 
-def calc_temp_features(data):
+def calc_temp_features(data, frame):
 
   SamplingRate = 700
-  TimeWindow = 30
-  WindowSize = SamplingRate*TimeWindow
+  TimeWindow = frame
+  WindowSize = int(SamplingRate*TimeWindow)
 
   features = np.zeros(6)
 
