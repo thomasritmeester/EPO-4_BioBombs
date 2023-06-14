@@ -20,7 +20,7 @@ import neurokit2 as nk
 
 ##################################
 #Creating a function:
-def ECG_time_data(ecg):
+def ECG_time_data(ecg, frame):
     from ECG import ECGprep
 
     #ecg_features = np.asarray(np.zeros(18), dtype = "float")
@@ -31,14 +31,12 @@ def ECG_time_data(ecg):
 
     #########################################################
     #cut a smaller window
-    wdw=(fs*60*0.5)
+    wdw=int(frame*fs)
     size_adpt=(int(wdw))
 
     #print(size_adpt, "size of the samples")
-    t_tot = int((len(ecg)//size_adpt))      #int(wdw)
-    #print("t_tot=" ,t_tot)
-    ecg_tot = np.zeros([size_adpt, t_tot])   
-    #print("t_tot=",t_tot)
+    t_tot = (len(ecg)//(int(wdw)))
+    ecg_tot = np.zeros([size_adpt, t_tot])
     #ecg_base_tot = np.zeros([size_adpt, t_tot])
     #print(t_tot, 'ttot1')
 
@@ -64,17 +62,13 @@ def ECG_time_data(ecg):
 
 #############################################################
 #Filtering the ECG data
-    
     for i in range(t_tot):
         ECG = ECGprep(fs, ecg_tot[:,i], "stress")
-        #print(ECG)
-        ecg_filt = ECG.filtering_data()
-    #print("hallo")
-    #print("ecg_filt=", ecg_filt.shape)
 
-#######################################################
-#Feature extraction, obtaining the peaks and getting the HRV time domain data.
-    for i in range (t_tot):   
+        ecg_filt = ECG.filtering_data()
+
+        #######################################################
+        #Feature extraction, obtaining the peaks and getting the HRV time domain data.
 
         #ECG_feat_base = nk.ecg_clean( ecg_filt_b, sampling_rate=fs)
         #ECG_feat= nk.ecg_clean( ecg_filt, sampling_rate=fs)
