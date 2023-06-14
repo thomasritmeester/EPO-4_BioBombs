@@ -112,7 +112,7 @@ def calc_phasic_features(phasic, eda_complete):
 
     return temp_array
 
-def calc_eda_features(eda_data):
+def calc_eda_features(eda_data, frame):
 
     #eda_features = np.zeros(13)
 
@@ -120,11 +120,11 @@ def calc_eda_features(eda_data):
 
     fs=700
     # cut a smaller window
-    wndw = int(0.5*60*fs)
-    t_tot=(len(eda_data)//(int(wndw)))
+    wndw = int(frame*fs)
+    t_tot= int(len(eda_data)//(int(wndw)))
 
     
-    eda_data_tot=np.empty([21000,t_tot])
+    eda_data_tot=np.empty([int(wndw),t_tot])
 
     for k in range(t_tot): 
         eda1=eda_data[k*int(wndw):(k+1)*int((wndw))]
@@ -140,7 +140,7 @@ def calc_eda_features(eda_data):
     #print(eda2.shape)
     #print(eda_stress_tot.shape)
 
-    eda_comp=np.zeros((3,len(eda_data_tot[:]),t_tot))
+    eda_comp=np.zeros((3,len(eda_data_tot[:,0]),t_tot))
     EDA = []
     for j in range (t_tot): 
         EDA = EDAprep(fs, eda_data_tot[:,j],"baseline")
