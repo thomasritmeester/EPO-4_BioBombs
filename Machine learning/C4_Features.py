@@ -24,7 +24,7 @@ import pandas as pd
 from RESP import RESPprep
 
 
-
+WESAD_subjects = ["S2",'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
 C4_subjects = ["P1", "P2", "P5", "P9", "P10", "P11", "P12"]
 C4_gender = ['2', '-2', '2', '2', '-2', '-2', '2']
 
@@ -32,6 +32,7 @@ C4_gender = ['2', '-2', '2', '2', '-2', '-2', '2']
 
 
 # for frame in np.arange(30,125,5):
+frame=30
 #     all_data_df = pd.DataFrame()
 
 #     for item in C4_subjects:
@@ -125,15 +126,15 @@ C4_gender = ['2', '-2', '2', '2', '-2', '-2', '2']
 #         subject_name_df = pd.concat(subject_name, axis = 1)
 
 #         gender_list = np.asarray([C4_gender[index_in_list]]*len(patient_df.index))
-# #         gender = {}
-# #         gender_temp = pd.DataFrame(gender_list, columns = ['Gender'])
-# #         gender['Gender'] = gender_temp
-# #         gender_df = pd.concat(gender, axis = 1)
+#         gender = {}
+#         gender_temp = pd.DataFrame(gender_list, columns = ['Gender'])
+#         gender['Gender'] = gender_temp
+#         gender_df = pd.concat(gender, axis = 1)
 
 
-# #         patient_df = pd.concat([subject_name_df, gender_df, patient_df], axis = 1)
+#         patient_df = pd.concat([subject_name_df, gender_df, patient_df], axis = 1)
 
-# #         all_data_df = pd.concat([all_data_df, patient_df], ignore_index = True)
+#         all_data_df = pd.concat([all_data_df, patient_df], ignore_index = True)
         
 
 
@@ -141,32 +142,39 @@ C4_gender = ['2', '-2', '2', '2', '-2', '-2', '2']
 
 wesad_data_df = pd.read_csv('WESAD_data_1_min.csv', header = ([0,1]), index_col=0)
 
-# all_data_df = pd.read_csv('C4-features-windows/C4_' + str(frame) + '_sec.csv', header = ([0,1]), index_col=0)
+all_data_df = pd.read_csv('C4_' + str(frame) + '_sec.csv', header = ([0,1]), index_col=0)
 
 
 
-# list5 = list(all_data_df.columns.values)
-# list5.remove(('Subject', 'Subject'))
-# list5.remove(('Out', 'Out'))
-# list5.remove(('Gender', 'Gender'))
+list5 = list(all_data_df.columns.values)
+list5.remove(('Subject', 'Subject'))
+list5.remove(('Out', 'Out'))
+list5.remove(('Gender', 'Gender'))
 
-# for item in (C4_subjects):
-#     for i in range(len(list5)):
-#         c4_base_feature_mean = np.mean(all_data_df[ (all_data_df['Subject']['Subject'] == str(item)) & (all_data_df['Out']['Out'] == 0)][str(list(list5)[i][0])][str(list(list5)[i][1])])
-#         wesad_base_feature_mean = np.mean(wesad_data_df[wesad_data_df['Out']['Out'] == 0][str(list(list5)[i][0])][str(list(list5)[i][1])])
-#         scaling_factor = 1+ ((wesad_base_feature_mean - c4_base_feature_mean)/c4_base_feature_mean)
-#         all_data_df.loc[(all_data_df['Subject']['Subject'] == str(item)), (str(list(list5)[i][0]), [str(list(list5)[i][1])])]*= scaling_factor
 
-# all_data_df.to_csv('C4-features-windows/C4_' + str(frame) + '_sec.csv')
+for item in (C4_subjects):
+    for i in range(len(list5)):
+        c4_base_feature_mean = np.mean(all_data_df[ (all_data_df['Subject']['Subject'] == str(item)) & (all_data_df['Out']['Out'] == 0)][str(list(list5)[i][0])][str(list(list5)[i][1])])
+        wesad_base_feature_mean = np.mean(wesad_data_df[wesad_data_df['Out']['Out'] == 0][str(list(list5)[i][0])][str(list(list5)[i][1])])
+        scaling_factor = 1+ ((wesad_base_feature_mean - c4_base_feature_mean)/c4_base_feature_mean)
+        all_data_df.loc[(all_data_df['Subject']['Subject'] == str(item)), (str(list(list5)[i][0]), [str(list(list5)[i][1])])]*= scaling_factor
+        c4_base_feature_mean=np.mean(all_data_df[ (all_data_df['Subject']['Subject'] == str(item)) & (all_data_df['Out']['Out'] == 0)][str(list(list5)[i][0])][str(list(list5)[i][1])])
+all_data_df.to_csv('C4_' + str(frame) + '_sec.csv')
 
 ############################################
-# # Attempt  
-list10 = list(wesad_data_df.columns.values)  
-for k in range(len(list10)) :   
-    wesad_base_feature_mean = np.mean(wesad_data_df[wesad_data_df['Out']['Out'] == 0][str(list(list10)[k][0])][str(list(list10)[k][1])])
-    print(wesad_base_feature_mean.shape)
-# for item in (subject):
-#     for i in range(len(list10)):
-#         wesad_subject_base_mean = np.mean(wesad_data_df[ (wesad_data_df['Subject']['Subject'] == str(item)) & (wesad_data_df['Out']['Out'] == 0)][str(list(list10)[i][0])][str(list(list10)[i][1])])
-#         scaling_factor = 1+ ((wesad_base_feature_mean -wesad_subject_base_mean)/wesad_subject_base_mean)
-#         wesad_data_df.loc[(wesad_data_df['Subject']['Subject'] == str(item)), (str(list(list10)[i][0]), [str(list(list10)[i][1])])]*= scaling_factor
+
+list10 = list(wesad_data_df.columns.values) 
+list10.remove(('Subject', 'Subject'))
+list10.remove(('Out', 'Out'))
+list10.remove(('Gender', 'Gender'))
+
+wesad_base_feature_mean = np.mean(wesad_data_df[wesad_data_df['Out']['Out'] == 0])
+
+for item in (WESAD_subjects):
+    for k in range(len(list10)):
+        wesad_subject_base_mean = np.mean(wesad_data_df[ (wesad_data_df['Subject']['Subject'] == str(item)) & (wesad_data_df['Out']['Out'] == 0)][str(list(list10)[k][0])][str(list(list10)[k][1])])
+        scaling_factor = 1+ ((wesad_base_feature_mean -wesad_subject_base_mean)/wesad_subject_base_mean)
+        wesad_data_df.loc[(wesad_data_df['Subject']['Subject'] == str(item)), (str(list(list10)[k][0]), [str(list(list10)[k][1])])]*= scaling_factor
+        wesad_subject_base_mean = np.mean(wesad_data_df[ (wesad_data_df['Subject']['Subject'] == str(item)) & (wesad_data_df['Out']['Out'] == 0)][str(list(list10)[k][0])][str(list(list10)[k][1])])
+
+wesad_data_df.to_csv('WESAD_data_1_min.csv', header = [0,1], index_col = 0)

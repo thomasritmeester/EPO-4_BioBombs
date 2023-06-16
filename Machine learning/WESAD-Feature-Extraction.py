@@ -147,6 +147,6 @@ for i in range(len(subject)):
     all_data_df = pd.concat([all_data_df, patient_df], ignore_index = True)
     
 
-
+all_data_df.to_csv('WESAD_data_1_min.csv', header = [0,1], ignore_index = True)
 
 
