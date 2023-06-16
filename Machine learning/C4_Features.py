@@ -144,7 +144,8 @@ wesad_data_df = pd.read_csv('WESAD_data_1_min.csv', header = ([0,1]), index_col=
 
 all_data_df = pd.read_csv('C4_' + str(frame) + '_sec.csv', header = ([0,1]), index_col=0)
 
-
+#########################################################################################
+#C4 Scaling to WESAD Baseline (Hybrid Approach)
 
 list5 = list(all_data_df.columns.values)
 list5.remove(('Subject', 'Subject'))
@@ -162,7 +163,7 @@ for item in (C4_subjects):
 all_data_df.to_csv('C4_' + str(frame) + '_sec.csv')
 
 ############################################
-
+#WESAD Scaling (Hybrid Approach)
 list10 = list(wesad_data_df.columns.values) 
 list10.remove(('Subject', 'Subject'))
 list10.remove(('Out', 'Out'))
