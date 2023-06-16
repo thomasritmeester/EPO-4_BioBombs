@@ -100,8 +100,8 @@ for i in range(len(subject)):
     ecg_features_freq_stress = ECG_freq_data(ecg_data_stress, 60)
 
     print('ACC')
-    acc_features_stress = acc_features(acc_chest_stress, 60)
-    acc_features_base = acc_features(acc_chest_baseline, 60)
+    acc_features_stress = calc_acc_features(acc_chest_stress, 60)
+    acc_features_base = calc_acc_features(acc_chest_baseline, 60)
 
     base_dict['EDA'] = eda_features_base
     base_dict['EMG'] = emg_features_base
@@ -147,7 +147,6 @@ for i in range(len(subject)):
     all_data_df = pd.concat([all_data_df, patient_df], ignore_index = True)
     
 
-## Generate CSV file
-all_data_df.to_csv('WESAD_data_1_min.csv')
+
 
 

@@ -5,8 +5,8 @@ from scipy.signal import chirp, find_peaks, peak_widths, peak_prominences
 from scipy.signal import chirp, find_peaks, peak_widths, peak_prominences
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.model_selection import train_test_split
-from EDA_Features import *
-from Temperature_Features import *
+from EDA_Features2 import *
+from TEMP import *
 from ECG_features_time import * 
 from ECG_features_freq import *
 from EMG_Features import *
@@ -65,7 +65,7 @@ def extraction (train_test):
         ecg_features_time_base = ECG_time_data(ecg_data_base)
         ecg_features_freq_base = ECG_freq_data(ecg_data_base)
 
-        acc_chest_stress=stress_data['ACC'] 
+        acc_chest_stress=stress_data['ACC_X', 'ACC_Y', 'ACC_Z']
 
         eda_data_stress=stress_data['EDA']
         eda_data_base=base_data['EDA']
