@@ -1,9 +1,12 @@
 import time
 from pySerialTransfer import pySerialTransfer as txfer
 import csv
+from UPDATE import DynamicUpdate
 
 def import_all(COMport = '/dev/ttyACM0'):
     print("Importing ECG, GSR and respiratory data \n")
+    d = DynamicUpdate(700)
+    d.on_launch()
     try:
         link = txfer.SerialTransfer(COMport, baud=57600)
 
@@ -66,7 +69,9 @@ def import_all(COMport = '/dev/ttyACM0'):
                 #import TEMP data from serial connection
                 data[10] = link.rx_obj(obj_type='H', start_pos=recSize)/100
                 recSize += txfer.STRUCT_FORMAT_LENGTHS['H']
-
+                
+                d.go(data[0],data[1])
+                
                 writer.writerow(data)
 
             elif link.status < 0:
@@ -78,6 +83,7 @@ def import_all(COMport = '/dev/ttyACM0'):
                     print('ERROR: STOP_BYTE_ERROR')
                 else:
                     print('ERROR: {}'.format(link.status))
+                    
 
 
     except KeyboardInterrupt:
